@@ -13,15 +13,17 @@
         this.dealer = new Dealer();
         this.state = GAMESTATES.WELCOME;
         this.betAmount = 0;
+        this.splitBetAmount = 0;
         this.insuranceTaken = false;
         this.doubledDown = false;
         this.insuranceBetAmount = 0;
     }
 
-    drawCard(playerToDraw) {
+    drawCard(userToDraw, handToDrawTo) {
         let drawnCardArray = this.deck.drawCard();
-        playerToDraw.hand.push(drawnCardArray[0]);
-        playerToDraw.updateHandValue();
+
+        handToDrawTo.push(drawnCardArray[0]);
+        userToDraw.updateHandValue();
     }
 
     placeBet() {
@@ -66,11 +68,11 @@
     }
 
     initialDeal() {
-        this.drawCard(this.player);
+        //this.drawCard(this.player);
         // this.drawCard(this.dealer);
-        this.drawCard(this.player);
+        //this.drawCard(this.player);
         //this.drawCard(this.dealer);
-        // this.givePlayerBlackJack();
+        this.givePlayerTwoAces();
         this.giveDealerBlackJack();
     }
 
@@ -219,6 +221,9 @@
                 case '2':
                     stillPlaying = false;
                     break;
+                case '3': 
+                    this.playerSplits();
+                    break;
                 case '4':
                     this.doubleDown();
                     this.hit()
@@ -247,6 +252,18 @@
         for (let card of this.dealer.hand) {
             console.log(card.value + card.suit);
         }
+    }
+
+    playerSplits() {
+        this.player.splitHand();
+        //bet for same amount
+        this.splitBetAmount = this.betAmount;
+        this.player.bankroll -= this.splitBetAmount;
+        this.displayBankroll();
+
+        //add card to each hand
+        this.drawCard(this.player, this.player.hand);
+        this.drawCard(this.player, this.player.hand2);
     }
 
     takeInsurance() {
@@ -339,21 +356,15 @@ class User {
         return this.handValue;
     }
 
-    // checkAceValue(){
-        
-    //     if(this.player.handvalue> 21)
-    //     {
-    //         for(let i = 0; i < this.player.hand; i++)
-    //         {
-    //             if(player.hand[i] === 'A')
-    //             {
-    //                 player.hand[i].value = 1;
-    //             }
-    //         }
-    //     }
+    splitHand() {
+        this.hand2 = [];
+        this.hand2value = 0;
 
-    // }
 
+        const cardToAddToHand2 = this.hand.slice(-1);
+        this.hand2.push(cardToAddToHand2[0]);
+        this.hand.pop(cardToAddToHand2[0]);
+    }
 
     checkBust() {
         if (this.getHandValue() > 21)
