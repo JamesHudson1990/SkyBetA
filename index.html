@@ -3,23 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackJack</title>
-    <script src= "JS/script.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/d3js/6.2.0/d3.min.js"></script> 
-    <!-- type="module" -->
-    <link rel="stylesheet" href="CSS/style.css">
+    <title>Blackjack</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="computer-card-slot card slot">
-    <div class = "card red" data-value="9 ♥">
-        ♥
+ <!--
+##############################
+Main Game View
+##############################
+ -->   
+    <div class="dealer-hand-show">
+        <h2>Dealer Hand</h2>
+        <div class="card-deck">
+            <div class="card-show">
+                <h2>♥</h2>
+            </div>
+            <div class="card-hidden">
+            </div>
+        </div>
     </div>
-</div> 
-
-<div class="text">1111111111</div>
-
-<div class="player-card-slot card slot"></div> 
+    <div class="begin-game">
+        <button class="start-control-btn button">
+            <h3>Start Game</h3>
+        </button>
+    </div>
+    <div class="player-hand-show">
+        <h2>Player Hand</h2>
+        <div class="card-deck">
+            <div class="card-show">
+                ♥
+            </div>
+            <div class="card-show">
+                ♥
+            </div>
+        </div>
+    </div>
+ <!--
+##############################
+Player Control Buttons
+##############################
+ --> 
+ <div class="player-controls">
+    <div class="player-control-btns">
+        <button id="25-btn" class="control-btn-25 button">
+            <h3>25</h3>
+        </button>
+        <button id="50-btn" class="control-btn-50 button">
+            <h3>50</h3>
+        </button>
+        <button id="75-btn" class="control-btn-75 button">
+            <h3>75</h3>
+        </button>
+        <button id="100-btn" class="control-btn-100 button">
+            <h3>100</h3>
+        </button>
+        <button id="bet-btn" class="control-btn-bet button">
+            <h3>Press to bet 0</h3>
+        </button>
+    </div>
+</div>
+ <!--
+##############################
+Player Control Buttons
+##############################
+ --> 
+    <div class="player-controls">
+        <div class="player-control-btns">
+            <button id="hit-btn" class="control-btn-hit button">
+                <h3>Hit</h3>
+            </button>
+            <button id="stand-btn" class="control-btn-stand button">
+                <h3>Stand</h3>
+            </button>
+            <button id="double-btn" class="control-btn-double button">
+                <h3>Double</h3>
+            </button>
+            <button id="split-btn" class="control-btn-split button">
+                <h3>Split</h3>
+            </button>
+        </div>
+    </div>
 </body>
-
 </html>
