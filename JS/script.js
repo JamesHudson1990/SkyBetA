@@ -6,6 +6,7 @@
  const PlayState = ["DEAL", "MOVE"]
  const PLAYERMOVES = ["HIT", "STAND", "SPLIT", "DOUBLEDOWN"]
 
+ 
  class Game {
     constructor() {
         this.deck = new Deck();
@@ -138,7 +139,24 @@
     placeBet() {
         
         this.displayBankroll();
-        var betSize = prompt("Please enter your bet", "<bet goes here>");
+        
+      
+    if(document.getElementById("25-btn").onclick()){
+        var betSize = betSize +=25
+        document.getElementById(bet-btn).innerHTML = betSize;
+
+    }
+    if(document.getElementById("50-btn").onclick()){
+        var betSize = betSize +=50
+    }
+    if(document.getElementById("75-btn").onclick()){
+        var betSize = betSize +=75
+    }
+    if(document.getElementById("100-btn").onclick()){
+        var betSize = betSize +=100
+    }
+  
+        // var betSize = prompt("Please enter your bet", "<bet goes here>");
     
         if(Number.isInteger(parseInt(betSize)) && betSize <= this.player.bankroll){
             this.betAmount = betSize;
@@ -596,12 +614,12 @@ const computerCardSlot = document.querySelector('.computer-card-slot')
 const blackjackGame = new Game();
 
 
-console.log(blackjackGame.player.bankroll > 0);
+// console.log(blackjackGame.player.bankroll > 0);
 
 
 
-while (blackjackGame.player.bankroll > 0) {
+//while (blackjackGame.player.bankroll > 0) {
     blackjackGame.playGame();
-}
+//}
 
 
