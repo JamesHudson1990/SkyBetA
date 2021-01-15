@@ -18,41 +18,206 @@
         this.insuranceTaken = false;
         this.doubledDown = false;
         this.insuranceBetAmount = 0;
+        this.betPlaced = false;
+        this.playerHasHit = false;
     }
 
-    drawCardFromDeck(handToDrawTo) {
+
+
+    clearHandAndAwaitUserBet() {
+        this.clearHands();
+        this.showBettingControls();
+    }
+
+    updateBetAmountButton() {
+        document.getElementById("currentBetAmountH3").innerHTML = this.betAmount;
+    }
+
+    updateBankrollDisplay() {
+        document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
+    }
+
+    playGame() {
+        this.updateBankrollDisplay();
+        console.log("bet placed");
+        this.deck.resetDeck();
+        this.deck.shuffle();
+        console.log("dealing 2 cards to each player");
+        this.initialDeal();
+        this.showActionControls();
+       
+        // if (!this.checkForBlackjack(this.player.hand)) {
+        //         this.playerPlays(this.player.hand, this.betAmount);
+        //         this.dealerPlays();
+        // }
+        // else if(this.checkForBlackjack(this.player.hand) && this.   dealerHasFaceUpAce())
+        //         this.dealerPlays();
+
+        
+        // if(this.player.hasSplit) {
+        //     console.log("first hand results");
+        //     this.checkResults(this.player.hand, this.betAmount);
+        //     console.log("second hand results");
+        //     this.checkResults(this.player.hand2, this.splitBetAmount);
+        // }
+
+        // else {
+        //     this.checkResults(this.player.hand, this.betAmount);
+        // }
+    }
+    
+
+    placeBet() {
+        this.displayBankroll();
+
+        //dont let user bet 0
+        if(this.betAmount > 0)
+        {
+            this.player.bankroll -= this.betAmount;
+            console.log("You have bet: $" + this.betAmount);
+            this.hideBettingControls();
+            this.playGame();
+        }
+        else
+            console.log("You have to add a bet");
+    }
+
+    increaseBetByAmount(amountToIncrease) {
+        ///validation that user actually have enough money
+
+        if (this.player.bankroll > (this.betAmount + amountToIncrease)){
+            this.betAmount += amountToIncrease;
+            this.updateBetAmountDisplay();
+        }
+        else{
+            console.log("You don't have the funds for this");
+        }
+    }
+    
+    updateBetAmountDisplay() {
+        document.getElementById("current-bet-amount").innerHTML = this.betAmount;
+    }
+
+    showBettingControls() {
+        var bettingControls = document.getElementById("bettingControls");
+        bettingControls.style.display = "block";
+    }
+
+    hideSplitButton() {
+        document.getElementById("split-btn").style.display = "none";
+    }
+
+    hideDoubleDownButton() {
+        document.getElementById("double-btn").style.display = "none";
+    }
+
+    showSplitButton() {
+        document.getElementById("split-btn").style.display = "inline";
+    }
+
+    showDoubleDownButton() {
+        document.getElementById("double-btn").style.display = "inline";
+    }
+
+    showInsuranceButton() {
+        document.getElementById("insurance-btn").style.display = "inline";
+    }
+
+    hideInsuranceButton() {
+        document.getElementById("insurance-btn").style.display = "none";
+    }
+
+
+    
+    showActionControls() {
+        var actionControls = document.getElementById("actionControls");
+        actionControls.style.display = "block";
+
+        if(this.dealerHasFaceUpAce()) {
+            this.showInsuranceButton();
+        }
+       
+        let playerCanSplit = (this.player.hand[0].value === this.player.hand[1].value);
+        if(playerCanSplit)
+        {
+            this.showSplitButton();
+        }
+
+        this.showDoubleDownButton();
+
+    }
+    
+    hideBettingControls() {
+        var bettingControls = document.getElementById("bettingControls");
+        bettingControls.style.display = "none";
+    }
+    
+    hideActionControls() {
+        var actionControls = document.getElementById("actionControls");
+        actionControls.style.display = "none";
+    }
+    
+    add25ToBet(){
+       this.increaseBetByAmount(25);
+       this.updateBetAmountButton();
+    }
+    
+    add50ToBet(){
+        this.increaseBetByAmount(50);
+        this.updateBetAmountButton();
+     }
+
+    add75ToBet(){
+        this.increaseBetByAmount(75);
+        this.updateBetAmountButton();
+     }
+
+    add100ToBet(){
+        this.increaseBetByAmount(100);
+        this.updateBetAmountButton();
+    }
+
+
+
+    ////
+
+    drawCardFromDeck(handToDrawTo, handDiv) {
         let drawnCardArray = this.deck.drawCard();
         handToDrawTo.push(drawnCardArray[0]);
+        
+        let cardIsRed = ((drawnCardArray[0].suit === '♥') || (drawnCardArray[0].suit === '♦'));
+
+        let suitAndValue = "" + drawnCardArray[0].suit + drawnCardArray[0].value;
+
+        let HTMLforCard = "";
+
+        if (cardIsRed) {
+            HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
+        }
+        else {
+            HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
+        }
+
+        handDiv.innerHTML = handDiv.innerHTML + HTMLforCard;
     }
+    
 
-    // METHODS FOR TESTING
-    // givePlayerBlackJack() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let tenOfSpades = new Card("♠","10");
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(tenOfSpades);
-    // }
-
-    // giveDealerBlackJack() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let tenOfSpades = new Card("♠","10");
-    //     this.dealer.hand.push(aceOfSpades);
-    //     this.dealer.hand.push(tenOfSpades);
-    // }
-
-    // givePlayerTwoAces() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let aceOfDiamonds = new Card("♦","A"); 
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(aceOfDiamonds);
-    // }
-    //
+    
 
     initialDeal() {
-        this.drawCardFromDeck(this.player.hand);
-        this.drawCardFromDeck(this.dealer.hand);
-        this.drawCardFromDeck(this.player.hand);
-        this.drawCardFromDeck(this.dealer.hand);
+        this.dealerDrawsCard();
+        this.playerDrawsCard();
+        this.dealerDrawsCard();
+        this.playerDrawsCard();
+        //this.giveDealerBlackJack();
+    }
+
+    dealerDrawsCard() {
+        this.drawCardFromDeck(this.dealer.hand, document.getElementById("dealersHand"));
+    }
+
+    playerDrawsCard() {
+        this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"));
     }
 
     clearHands() {
@@ -70,45 +235,6 @@
         this.deck.resetDeck();
         this.deck.shuffle();
     }
-
-    playGame() {
-            //this.resetDataForRound();
-            console.log("data reset");
-            this.clearHands();
-            this.placeBet();
-            
-            console.log("bet placed");
-            this.deck.resetDeck();
-            this.deck.shuffle();
-
-            
-            console.log("dealing 2 cards to each player");
-            this.initialDeal();
-            
-            console.log("displaying dealers first card");
-            this.displayDealersFirstCard();
-            this.displayHand(this.player.hand);
-            
-
-            if (!this.checkForBlackjack(this.player.hand)) {
-                    this.playerPlays(this.player.hand, this.betAmount);
-                    this.dealerPlays();
-            }
-            else if(this.checkForBlackjack(this.player.hand) && this.dealerHasFaceUpAce())
-                    this.dealerPlays();
-
-            
-            if(this.player.hasSplit) {
-                console.log("first hand results");
-                this.checkResults(this.player.hand, this.betAmount);
-                console.log("second hand results");
-                this.checkResults(this.player.hand2, this.splitBetAmount);
-            }
-            else {
-                this.checkResults(this.player.hand, this.betAmount);
-            }
-    }
-    
     
     dealerHasFaceUpAce() {
         if (this.dealer.hand[0].value === 'A'){
@@ -121,14 +247,14 @@
     payoutWinnings(amountToPayOut) {
         console.log("You have won $" + amountToPayOut)
         this.player.bankroll += amountToPayOut;
-        this.displayBankroll();
+        this.updateBankrollDisplay();
     }
 
     payoutInsurance() {
         let winnings = this.insuranceBetAmount * 2;
         console.log("Your insurance paid out $" + winnings);
         this.player.bankroll += winnings;
-        this.displayBankroll();
+        this.updateBankrollDisplay();
     }
 
     displayBankroll() {
@@ -136,42 +262,11 @@
     }
 
 
-    placeBet() {
-        
-        this.displayBankroll();
-        
-      
-    if(document.getElementById("25-btn").onclick()){
-        var betSize = betSize +=25
-        document.getElementById(bet-btn).innerHTML = betSize;
 
-    }
-    if(document.getElementById("50-btn").onclick()){
-        var betSize = betSize +=50
-    }
-    if(document.getElementById("75-btn").onclick()){
-        var betSize = betSize +=75
-    }
-    if(document.getElementById("100-btn").onclick()){
-        var betSize = betSize +=100
-    }
-  
-        // var betSize = prompt("Please enter your bet", "<bet goes here>");
-    
-        if(Number.isInteger(parseInt(betSize)) && betSize <= this.player.bankroll){
-            this.betAmount = betSize;
-            this.player.bankroll -= betSize;
-        }
-        else
-        {
-            alert("Sorry, you do not have enough funds to make that wager.")
-            // YOU NOT GOT ENOUGH MONEY
-        }
-    
-        console.log("You have bet: $" + betSize);
-    }
 
     checkResults(handToCheck, betAmountForHand) {
+        this.hideActionControls();
+        this.dealerPlays();
 
         let playerHasBlackjack = this.checkForBlackjack(handToCheck);
         let playerIsBust = User.checkBust(handToCheck);
@@ -211,8 +306,7 @@
 
         if(this.insuranceTaken) {
             if(dealerHasBlackjack) {
-                this.payoutInsurance();
-                this.insuranceTaken = false;      
+                this.payoutInsurance(); 
             }
             else {
                 console.log("Your insurance flopped, you lost $" + (this.betAmount / 2));
@@ -222,36 +316,53 @@
 
 
 
-    hit(handToHit) {
-        this.drawCardFromDeck(handToHit);
-        this.displayHand(handToHit);
-
-        if (User.checkBust(handToHit)){
-            console.log("You are bust with " + User.getHandValue(handToHit));
-            this.player.bust = true;
+    hit() {
+        this.hideDoubleDownButton();
+        this.playerDrawsCard();
+        if (User.checkBust(this.player.hand)){
+            this.checkResults(this.player.hand, this.betAmount);
         }
         else {
-            console.log("You have " + User.getHandValue(handToHit));
         }
+    }
+
+    stand() {
+        this.checkResults(this.player.hand, this.betAmount);
+    }
+
+    doubleDown() {
+
+        if(this.betAmount < this.player.bankroll)
+        {
+            this.doubledDown = true;
+            //place bet of this.betAmount
+            //update controls
+
+            this.player.bankroll -= this.betAmount;
+            this.betAmount = this.betAmount*2;
+
+            this.updateBankrollDisplay();
+            this.updateBetAmountDisplay();
+
+            this.playerDrawsCard();
+            this.stand();
+        }
+        else
+        {
+            console.log("You do not have the facilities for this big man");
+       }
     }
 
     dealerPlays() {
         let dealerHandValue = User.getHandValue(this.dealer.hand);
 
-        this.displayDealersHand();
         if (!User.checkBust(this.dealer.hand))
         {
-                console.log("The dealer has: " + dealerHandValue);
                 while(dealerHandValue < 17){
-                    console.log("The dealer draws a card")
-                    this.drawCardFromDeck(this.dealer.hand);
+                    this.dealerDrawsCard();
                     dealerHandValue = User.getHandValue(this.dealer.hand);
-                    this.displayDealersHand();
-                    console.log("The dealer has: " +dealerHandValue);
-
                     if(dealerHandValue > 21)
                         this.dealer.bust = true;
-
                 }
         }
     }
@@ -265,10 +376,9 @@
     }
 
     playerPlays(handBeingPlayed, betAmountForHand) {
+
         let stillPlaying = true;
         while(!this.player.bust && stillPlaying) {
-            let playerOption = prompt("1 = hit, 2 = stand, 3 = split, 4 = double down, 5 = take insurence", "");
-
             switch(playerOption) {
                 case '1':
                     this.hit(handBeingPlayed);
@@ -300,6 +410,7 @@
             }
         }
     }
+
 
     displayHand(handToDisplay) {
         for (let card of handToDisplay) {
@@ -356,27 +467,52 @@
 
     takeInsurance() {
         //add validation that player has enough bankroll
+        this.hideInsuranceButton();
         console.log("Insurance taken");
         this.insuranceTaken = true;
         this.insuranceBetAmount = this.betAmount/2;
         console.log("insurance bet of $" + this.insuranceBetAmount);
         this.player.bankroll -= this.insuranceBetAmount;
+        this.updateBankrollDisplay();
     }
 
-    doubleDown(betToDoubleDown){
-        if(betToDoubleDown < this.player.bankroll)
-        {
-            this.doubledDown = true;
-            console.log("You doubled down");
-            this.player.bankroll -= betToDoubleDown;
-            betToDoubleDown = betToDoubleDown*2;
-        }
-        else
-        {
-            // dont have enough money
-            console.log("You do not have the facilities for this big man");
-        }
+    // doubleDown(betToDoubleDown){
+    //     if(betToDoubleDown < this.player.bankroll)
+    //     {
+    //         this.doubledDown = true;
+    //         console.log("You doubled down");
+    //         this.player.bankroll -= betToDoubleDown;
+    //         betToDoubleDown = betToDoubleDown*2;
+    //     }
+    //     else
+    //     {
+    //         // dont have enough money
+    //         console.log("You do not have the facilities for this big man");
+    //     }
+    // }
+    
+    // METHODS FOR TESTING
+    // givePlayerBlackJack() {
+    //     let aceOfSpades = new Card("♠","A"); 
+    //     let tenOfSpades = new Card("♠","10");
+    //     this.player.hand.push(aceOfSpades);
+    //     this.player.hand.push(tenOfSpades);
+    // }
+
+    giveDealerBlackJack() {
+        let aceOfSpades = new Card("♠","A"); 
+        let tenOfSpades = new Card("♠","10");
+        this.dealer.hand.push(aceOfSpades);
+        this.dealer.hand.push(tenOfSpades);
     }
+
+    // givePlayerTwoAces() {
+    //     let aceOfSpades = new Card("♠","A"); 
+    //     let aceOfDiamonds = new Card("♦","A"); 
+    //     this.player.hand.push(aceOfSpades);
+    //     this.player.hand.push(aceOfDiamonds);
+    // }
+    //
 
     // checkState(GAMESTATES)
     //  {
@@ -423,7 +559,6 @@ class User {
 
         // let cardValues = handToCalculateValueFor.map(card => card.intValue);
         // cardValues.sort((a, b) => a - b);
-
         for (let card of handToCalculateValueFor) {
             if (card.intValue != 11)
                 tempHandValue += card.intValue;
@@ -482,7 +617,7 @@ class User {
 
     static checkBust(handToCheck) {
         if (User.getHandValue(handToCheck) > 21)
-             return true;   
+            return true;   
         else
             return false;
     }
@@ -585,41 +720,14 @@ class Deck{
         }
     }
  }
- 
 
 
-function Payout(){
 
-    payout = betSize + betSize;
-
-    totalFunds = totalFunds + payout;
-}
-
-function playAgain(){
-    if(confirm('Do you want to play again?')){
-        
-        GAMESTATES = "PLAY"
-    }
-    else{
-        close();
-    }
-}
-
-//game logic
- //SCRIPT JS
-//  import Deck from "./deck.js"
-const computerCardSlot = document.querySelector('.computer-card-slot')
-
-//const gameOfBlackjack = new Game();
 const blackjackGame = new Game();
 
 
-// console.log(blackjackGame.player.bankroll > 0);
-
-
-
-//while (blackjackGame.player.bankroll > 0) {
-    blackjackGame.playGame();
-//}
-
-
+function startGame() {
+    var startGameBtn = document.getElementById("start-control-btn");
+    startGameBtn.style.display = "none";
+    blackjackGame.clearHandAndAwaitUserBet();
+}

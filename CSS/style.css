@@ -15,6 +15,39 @@ body
     background-size: cover;
   }
 
+   /* 
+##############################
+Game Overlay
+##############################
+*/
+
+#overlay {
+    position: fixed;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(bg.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    z-index: 2;
+  }
+
+.container {
+    position: relative;
+    top: 50%;
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: whitesmoke;
+}
 
 /* 
 ##############################
@@ -31,10 +64,17 @@ Dealer Deck
     margin-bottom: 20px;
 }
 
+/* 
+##############################
+Card Deck
+##############################
+*/
+
 .card-deck {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: sans-serif;
 }
 
 .card-show {
@@ -43,9 +83,14 @@ Dealer Deck
     width: 125px;
     margin: 10px;
     text-align: center;
-    font-size: 15px;
+    font-size: 4rem;
     border-radius: 2px;
     box-shadow: 5px 5px 3px;
+    line-height: 200px;
+}
+
+.card-is-red {
+    color: red;
 }
 
 .card-hidden {
@@ -58,6 +103,44 @@ Dealer Deck
     border-radius: 2px;
     box-shadow: 5px 5px 3px;
 }
+
+.card-is-red {
+  color: red;
+}
+.card-topleft {
+  position: absolute;
+  top: 0.5em;
+  left: 0.75em;
+}
+.card-bottomright {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.75em;
+  transform: rotate(180deg);
+}
+.card-corner-rank, .card-corner-suit {
+  width: 1em;
+  text-align: center;
+  transform: translate(-50%, 0);
+}
+
+.card-suits {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 17.5%;
+    height: 25%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .card-suit {
+    font-size: 1em;
+    position: absolute;
+  }
+  
+  .card-suit.mirrored {
+    transform: rotate(180deg);
+  }
 
 /* 
 ##############################
@@ -93,16 +176,22 @@ Player Deck
     padding: 10px;
     text-align: center;
 }
+.bet-amount {
+    font-family: sans-serif;
+    font-style: bold;
+    color: whitesmoke;
+}
 
 /* 
 ##############################
-Player Control Buttons
+Player Action Control Buttons
 ##############################
 */
 
 .control-btn-hit {
     height: 50px;
     width: 180px;
+    margin-top: 5px;
     color: cornsilk;
     background-color: #237901;
     border-radius: 2px;
@@ -114,6 +203,7 @@ Player Control Buttons
     height: 50px;
     width: 180px;
     background-color: #750DD2;
+    margin-top: 5px;
     color: cornsilk;
     border-radius: 2px;
     border: 3px solid #B89E4B;
@@ -124,6 +214,7 @@ Player Control Buttons
     height: 50px;
     width: 180px;
     background-color: #1F1611;
+    margin-top: 5px;
     color: cornsilk;
     border-radius: 2px;
     border: 3px solid #B89E4B;
@@ -134,10 +225,23 @@ Player Control Buttons
     height: 50px;
     width: 180px;
     background-color: #460008;
+    margin-top: 5px;
     color: cornsilk;
     border-radius: 2px;
     border: 3px solid #B89E4B;
     box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-insurance {
+    height: 50px;
+    width: 180px;
+    background-color: #FF5733;
+    margin-top: 5px;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+    display: none;
 }
 
 .start-control-btn {
@@ -152,7 +256,7 @@ Player Control Buttons
 
 /* 
 ##############################
-Player Betting Buttons
+Player Betting Control Buttons
 ##############################
 */
 
@@ -241,4 +345,33 @@ Button decorations
 .disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
+}
+
+#actionControls {
+    display: none;
+}
+
+#bettingControls {
+    display: none;
+}
+
+#bet-btn h3 {
+    display:inline;
+}
+
+#currentBetAmountH3 {
+    color: #f0fa63;
+}
+
+#double-btn {
+    display: none;
+}
+
+#split-btn {
+    display: none;
+}
+
+
+/* #start-control-btn {
+    display:none;
+} */

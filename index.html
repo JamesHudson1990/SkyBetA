@@ -7,34 +7,91 @@
     <link rel="stylesheet" href="CSS/style.css">
     <script src="JS/script.js"></script>
 </head>
-<body>
  <!--
 ##############################
-Main Game View
+Main Game Code
+##############################
+ --> 
+<body>
+    <div id="overlay"> 
+        <div class="container">
+            <button id="start-button" button class="start-control-btn button" onclick="newGame()">
+                <h3>New Game</h3>
+            </button> 
+        </div>
+        <div class="container">
+            <button class="start-control-btn button" onclick="off()">
+                <h3>Tutorial Mode</h3>
+            </button> 
+        </div>       
+    </div>
+ <!--
+##############################
+Main Game Code
 ##############################
  -->   
     <div class="dealer-hand-show">
         <h2>Dealer Hand</h2>
-        <div class="card-deck">
-            <div class="card-show">
-                <h2>♥</h2>
-            </div>
-            <div class="card-hidden">
-            </div>
+        <div class="card-deck" id="dealersHand">
+<!-- 
+
+            <div class="card-show card-is-red">♥9</div>
+             -->
+            <!-- <div class="card-show">
+                <div class="card-topleft">
+                    <div class="card-corner-rank">9</div>
+                    <div class="card-corner-suit">♥</div>
+                </div>
+                 <div class="card-bottomright">
+                    <div class="card-corner-rank">9</div>
+                    <div class="card-corner-suit">♥</div>
+                </div>
+            </div>  -->
         </div>
     </div>
     <div class="begin-game">
-        <button class="start-control-btn button">
+        <button id="start-control-btn" class="start-control-btn button" onclick="startGame()">
             <h3>Start Game</h3>
         </button>
     </div>
+  <!--
+##############################
+Player Card Deck
+##############################
+ -->    
     <div class="player-hand-show">
         <h2>Player Hand</h2>
-        <div class="card-deck">
-            <div class="card-hidden">
-            </div>
-            <div class="card-hidden">
-            </div>
+        <div class="bet-amount">Current bet amount: <span id="current-bet-amount"></span></div>
+        <div class="card-deck" id="playersHand">
+<!-- 
+            <div id="playersFirstCard" class="card-show card-is-red">♥K</div>
+            <div id="playersSecondCard" class="card-show card-is-red">♥A</div> -->
+
+            <!-- <div class="card-show">
+                <div class="card-suits">
+                    ♥
+                </div>
+                <div class="card-topleft">
+                    <div class="card-corner-rank">9</div>
+                    <div class="card-corner-suit">♥</div>
+                </div>
+                <div class="card-bottomright">
+                    <div class="card-corner-rank">9</div>
+                    <div class="card-corner-suit">♥</div>
+                </div>
+            </div>  -->
+            <!-- <div class="card-show card-is-red">
+                <div class="card-topleft">
+                    <div class="card-corner-rank red">9</div>
+                    <div class="card-corner-suit red">♥</div>
+                </div>
+                <div class="card-bottomright">
+                    <div class="card-corner-rank red">9</div>
+                    <div class="card-corner-suit red">♥</div>
+                </div> -->
+
+                
+    
         </div>
     </div>
  <!--
@@ -42,22 +99,22 @@ Main Game View
 Player Control Buttons
 ##############################
  --> 
- <div class="player-controls">
+ <div class="player-controls" id="bettingControls">
     <div class="player-control-btns">
-        <button id="25-btn" class="control-btn-25 button">
+        <button id="25-btn" class="control-btn-25 button" onclick="blackjackGame.add25ToBet()">
             <h3>25</h3>
         </button>
-        <button id="50-btn" class="control-btn-50 button">
+        <button id="50-btn" class="control-btn-50 button" onclick="blackjackGame.add50ToBet()">
             <h3>50</h3>
         </button>
-        <button id="75-btn" class="control-btn-75 button">
+        <button id="75-btn" class="control-btn-75 button" onclick="blackjackGame.add75ToBet()">
             <h3>75</h3>
         </button>
-        <button id="100-btn" class="control-btn-100 button">
+        <button id="100-btn" class="control-btn-100 button" onclick="blackjackGame.add100ToBet()">
             <h3>100</h3>
         </button>
-        <button id="bet-btn" class="control-btn-bet button">
-            <h3>Press to bet 0</h3>
+        <button id="bet-btn" class="control-btn-bet button" onclick="blackjackGame.placeBet()">
+            <h3>Press to bet</h3> <h3 id="currentBetAmountH3"></h3>
         </button>
     </div>
 </div>
@@ -66,21 +123,39 @@ Player Control Buttons
 Player Control Buttons
 ##############################
  --> 
-    <div class="player-controls">
+    <div class="player-controls" id="actionControls">
         <div class="player-control-btns">
-            <button id="hit-btn" class="control-btn-hit button">
+            
+            <button id="hit-btn" class="control-btn-hit button" onclick="blackjackGame.hit()">
                 <h3>Hit</h3>
             </button>
-            <button id="stand-btn" class="control-btn-stand button">
+            <button id="stand-btn" class="control-btn-stand button" onclick="blackjackGame.stand()">
                 <h3>Stand</h3>
             </button>
-            <button id="double-btn" class="control-btn-double button">
+            <button id="double-btn" class="control-btn-double button"
+            onclick="blackjackGame.doubleDown()">
                 <h3>Double</h3>
             </button>
             <button id="split-btn" class="control-btn-split button">
                 <h3>Split</h3>
             </button>
+            <button id="insurance-btn" class="control-btn-insurance button" onclick="blackjackGame.takeInsurance()">
+                <h3>Insurance</h3>
+            </button>
+
         </div>
     </div>
+    <div class="bet-amount">Current bankroll: <span id="current-bank-roll"></span></div>
+ <!--
+##############################
+Scripts and stuff
+##############################
+ -->  
+    <script>
+
+        function newGame() {
+          document.getElementById("overlay").style.display = "none";
+        }
+        </script>
 </body>
 </html>
