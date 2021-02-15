@@ -1,4 +1,3 @@
-
 //DECK JS
  const SUITS = ["♠","♥","♣","♦"]
  const VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -731,3 +730,44 @@ function startGame() {
     startGameBtn.style.display = "none";
     blackjackGame.clearHandAndAwaitUserBet();
 }
+
+
+//online/offline api stuff
+const checkOnlineStatus = async () => {
+    try {
+      const online = await fetch("https://bet.sbgcdn.com/content/cadmin/700f32ed29c1554daddeb32776c4aa04.jpg");
+      
+      return online.status >= 200 && online.status < 300; // either true or false
+    } catch (err) {
+      return false; // definitely offline
+    }
+  };
+
+  setInterval(async () => {
+    const connected = await checkOnlineStatus();
+    debugger;
+    if (connected) {
+        window.location.href = "https://m.skybet.com/";
+    }
+    else {
+        const statusDisplay = document.getElementById("status");
+        statusDisplay.textContent = "Currently Offline";
+        statusDisplay.style.color = "red";
+    }
+
+
+    }, 3000);
+
+  window.addEventListener("load", async (event) => {
+    const statusDisplay = document.getElementById("status");
+    statusDisplay.textContent = (await checkOnlineStatus())
+      ? "Online"
+      : "Offline";
+  });
+
+
+
+
+
+
+
