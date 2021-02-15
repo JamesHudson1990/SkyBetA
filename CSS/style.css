@@ -49,6 +49,92 @@ Game Overlay
     color: whitesmoke;
 }
 
+.popup-container {
+    position: relative;
+    top: 50%;
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: whitesmoke;
+    background-color: black;
+}
+
+#status-popup {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: rgba(0,0,0,0.5); 
+}
+
+#resultsBox {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.results-container {
+    position: relative;
+    top: 50%;
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: whitesmoke;
+    font-family: arial;
+    /* background: rgb(0,0,0);
+    background: radial-gradient(rgba(0,0,0,0), (rgba(0,0,0,0.5)); 
+    background: content-box radial-gradient(black, transparent);*/
+   /*  background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%); */
+   background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,0) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 90%);
+}
+
+  /* 
+##############################
+Menu Function
+##############################
+*/
+
+
+  .top-nav {
+    overflow: hidden;
+    background-color: rgba(255,255,255, 0.5);
+  }
+  
+  .top-nav a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+  
+  
+  
 /* 
 ##############################
 Dealer Deck

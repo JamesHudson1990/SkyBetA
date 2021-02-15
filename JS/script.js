@@ -5,7 +5,6 @@
  const PlayState = ["DEAL", "MOVE"]
  const PLAYERMOVES = ["HIT", "STAND", "SPLIT", "DOUBLEDOWN"]
 
- 
  class Game {
     constructor() {
         this.deck = new Deck();
@@ -19,11 +18,25 @@
         this.insuranceBetAmount = 0;
         this.betPlaced = false;
         this.playerHasHit = false;
+        this.playing = true;
+
+        //check if data is saved for bankroll and update
+        if(parseInt(localStorage.bankroll))
+        {
+            this.player.setBankrollFromLocalStorage();
+        }
     }
 
+    offResultsBox() {
+        document.getElementById("resultsBox").style.display = "none";
 
+        this.resetDataForRound();
+        this.clearHandAndAwaitUserBet();
+    }
 
     clearHandAndAwaitUserBet() {
+        document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
+
         this.clearHands();
         this.showBettingControls();
     }
@@ -36,43 +49,21 @@
         document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
     }
 
-    playGame() {
+    playGame() {        
         this.updateBankrollDisplay();
-        console.log("bet placed");
         this.deck.resetDeck();
         this.deck.shuffle();
-        console.log("dealing 2 cards to each player");
         this.initialDeal();
         this.showActionControls();
-       
-        // if (!this.checkForBlackjack(this.player.hand)) {
-        //         this.playerPlays(this.player.hand, this.betAmount);
-        //         this.dealerPlays();
-        // }
-        // else if(this.checkForBlackjack(this.player.hand) && this.   dealerHasFaceUpAce())
-        //         this.dealerPlays();
-
-        
-        // if(this.player.hasSplit) {
-        //     console.log("first hand results");
-        //     this.checkResults(this.player.hand, this.betAmount);
-        //     console.log("second hand results");
-        //     this.checkResults(this.player.hand2, this.splitBetAmount);
-        // }
-
-        // else {
-        //     this.checkResults(this.player.hand, this.betAmount);
-        // }
     }
     
-
+    
     placeBet() {
         this.displayBankroll();
-
-        //dont let user bet 0
         if(this.betAmount > 0)
         {
             this.player.bankroll -= this.betAmount;
+            this.player.updateLocalStorageBankroll();
             console.log("You have bet: $" + this.betAmount);
             this.hideBettingControls();
             this.playGame();
@@ -82,8 +73,6 @@
     }
 
     increaseBetByAmount(amountToIncrease) {
-        ///validation that user actually have enough money
-
         if (this.player.bankroll > (this.betAmount + amountToIncrease)){
             this.betAmount += amountToIncrease;
             this.updateBetAmountDisplay();
@@ -125,8 +114,6 @@
     hideInsuranceButton() {
         document.getElementById("insurance-btn").style.display = "none";
     }
-
-
     
     showActionControls() {
         var actionControls = document.getElementById("actionControls");
@@ -176,10 +163,6 @@
         this.updateBetAmountButton();
     }
 
-
-
-    ////
-
     drawCardFromDeck(handToDrawTo, handDiv) {
         let drawnCardArray = this.deck.drawCard();
         handToDrawTo.push(drawnCardArray[0]);
@@ -199,16 +182,12 @@
 
         handDiv.innerHTML = handDiv.innerHTML + HTMLforCard;
     }
-    
-
-    
 
     initialDeal() {
         this.dealerDrawsCard();
         this.playerDrawsCard();
         this.dealerDrawsCard();
         this.playerDrawsCard();
-        //this.giveDealerBlackJack();
     }
 
     dealerDrawsCard() {
@@ -219,12 +198,8 @@
         this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"));
     }
 
-    clearHands() {
-        this.player.clearHand();
-        this.dealer.clearHand();
-    }
-
     resetDataForRound() {
+        
         this.clearHands();
         this.betAmount = 0;
         this.splitBetAmount = 0;
@@ -235,6 +210,15 @@
         this.deck.shuffle();
     }
     
+    clearHands() {
+        this.player.clearHand();
+        this.dealer.clearHand();
+
+        //actually update the gui
+        document.getElementById("dealersHand").innerHTML = '';
+        document.getElementById("playersHand").innerHTML = '';
+    }
+
     dealerHasFaceUpAce() {
         if (this.dealer.hand[0].value === 'A'){
             return true;
@@ -246,6 +230,7 @@
     payoutWinnings(amountToPayOut) {
         console.log("You have won $" + amountToPayOut)
         this.player.bankroll += amountToPayOut;
+        this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
 
@@ -253,6 +238,7 @@
         let winnings = this.insuranceBetAmount * 2;
         console.log("Your insurance paid out $" + winnings);
         this.player.bankroll += winnings;
+        this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
 
@@ -260,10 +246,8 @@
         console.log("You have $" + this.player.bankroll);
     }
 
-
-
-
     checkResults(handToCheck, betAmountForHand) {
+        let resultsString = "";
         this.hideActionControls();
         this.dealerPlays();
 
@@ -274,46 +258,59 @@
         let dealerAndPlayerHaveSameHandValue = User.getHandValue(handToCheck) === User.getHandValue(this.dealer.hand);
         let playersHandBeatsDealersHand = User.getHandValue(handToCheck) > User.getHandValue(this.dealer.hand);
 
-
-
         if (playerHasBlackjack) {
-            console.log("You have blackjack, you win!");
+            resultsString += "You have blackjack, you win!";
             this.payoutWinnings(2.5*betAmountForHand);
         }
         else if (playerIsBust) {
-            console.log("You went bust, the House wins");
+            resultsString += "You went bust, the House wins";
             this.displayBankroll();
         }
         else if (dealerHasBlackjack) {
-            console.log("The house has blackjack, the House wins");
+            resultsString += "The house has blackjack, the House wins";
             this.displayBankroll();
         }
         else if(dealerAndPlayerHaveSameHandValue) {
-            console.log("Push -- you get your bet back");
+            resultsString += "Push -- you get your bet back";
             this.payoutWinnings(betAmountForHand);
         }
         else if(playersHandBeatsDealersHand) {
-            console.log("You win!");
+            resultsString += "You win!";
             this.payoutWinnings(betAmountForHand*2);
         }
         else if(dealerIsBust) {
-                console.log("The Dealer bust! You win!");
+            resultsString += "The Dealer bust! You win!";
                 this.payoutWinnings(betAmountForHand*2);
         }
         else
-            console.log("The House wins");
+        resultsString += "The House wins";
 
         if(this.insuranceTaken) {
             if(dealerHasBlackjack) {
                 this.payoutInsurance(); 
             }
             else {
-                console.log("Your insurance flopped, you lost $" + (this.betAmount / 2));
+                resultsString += "Your insurance flopped, you lost $" + (this.betAmount / 2);
             }
         }
+
+
+        //show animation
+        //using the string that has been built
+        this.showEndOfHandAnimation(resultsString);
     }
 
+    showEndOfHandAnimation(resultsString) {
+        const resultsBox = document.getElementById("resultsBox");
+        const resultsText = document.getElementById("results-text");
+        resultsBox.style.display = 'block';
+        resultsText.innerHTML = resultsString;
+    }
 
+    hideEndOfHandAnimation() {
+        const resultsBox = document.getElementById("resultsBox");
+        resultsBox.style.display = 'none';
+    }
 
     hit() {
         this.hideDoubleDownButton();
@@ -334,10 +331,9 @@
         if(this.betAmount < this.player.bankroll)
         {
             this.doubledDown = true;
-            //place bet of this.betAmount
-            //update controls
 
             this.player.bankroll -= this.betAmount;
+            this.player.updateLocalStorageBankroll();
             this.betAmount = this.betAmount*2;
 
             this.updateBankrollDisplay();
@@ -435,12 +431,12 @@
         //bet for same amount
         this.splitBetAmount = this.betAmount;
         this.player.bankroll -= this.splitBetAmount;
+        this.player.updateLocalStorageBankroll();
         this.displayBankroll();
 
         //add card to each hand
         this.drawCardFromDeck(this.player.hand);
         this.drawCardFromDeck(this.player.hand2);
-
 
         console.log("first hand")
         this.displayHand(this.player.hand);
@@ -453,7 +449,7 @@
 
         console.log("playing second hand")
         this.playerPlays(this.player.hand2, this.splitBetAmount);
-    }
+        }
         else
         {
             console.log("You do not have the facilities for this big man");
@@ -462,33 +458,17 @@
         
     }
     
-        
 
     takeInsurance() {
-        //add validation that player has enough bankroll
         this.hideInsuranceButton();
         console.log("Insurance taken");
         this.insuranceTaken = true;
         this.insuranceBetAmount = this.betAmount/2;
         console.log("insurance bet of $" + this.insuranceBetAmount);
         this.player.bankroll -= this.insuranceBetAmount;
+        this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
-
-    // doubleDown(betToDoubleDown){
-    //     if(betToDoubleDown < this.player.bankroll)
-    //     {
-    //         this.doubledDown = true;
-    //         console.log("You doubled down");
-    //         this.player.bankroll -= betToDoubleDown;
-    //         betToDoubleDown = betToDoubleDown*2;
-    //     }
-    //     else
-    //     {
-    //         // dont have enough money
-    //         console.log("You do not have the facilities for this big man");
-    //     }
-    // }
     
     // METHODS FOR TESTING
     // givePlayerBlackJack() {
@@ -513,30 +493,6 @@
     // }
     //
 
-    // checkState(GAMESTATES)
-    //  {
-    //      switch(this.state)
-    //      {
-    //          case "WELCOME":
-    //             // code for the welcome page 
-    //             break;
-
-    //         case "INSTRUCTION":
-    //             // code for instruction page
-    //             break;
-
-    //         case "PLAY":
-    //             // Play has sub sets: deal, move
-                
-    //             playGame();
-    //             break;
-
-    //         case "PAYOUT":
-    //             // gives player money
-    //             payout();
-    //             break;
-    //     }
-    // }
 }
         
 class User {
@@ -556,16 +512,12 @@ class User {
         let arrayOfCardIntValues = [];
         let numberOfAces = 0;
 
-        // let cardValues = handToCalculateValueFor.map(card => card.intValue);
-        // cardValues.sort((a, b) => a - b);
         for (let card of handToCalculateValueFor) {
             if (card.intValue != 11)
                 tempHandValue += card.intValue;
             else {
                 numberOfAces++;
-                //console.log("Counted " + numberOfAces + " aces")
             }
-                
         }
 
         if (numberOfAces > 0){
@@ -594,16 +546,8 @@ class User {
                     tempHandValue += 14;
             }
         }
-
-
-
         return parseInt(tempHandValue);
     }
-    
-    // getHandValue(handToCalculateValueFor) {
-    //     this.updateHandValue(handToCalculateValueFor);
-    //     return this.handValue;
-    // }
 
     splitHand() {
         this.hasSplit = true;
@@ -621,20 +565,16 @@ class User {
             return false;
     }
 
-    // drawInitialHand() {
-    //     this.draw();
-    //     this.draw();
-    // }
+    setBankrollFromLocalStorage() {
+        this.bankroll = localStorage.getItem('bankroll');
+    }
+
+    updateLocalStorageBankroll() {
+        localStorage.setItem('bankroll', this.bankroll);
+    }
 }
 
 class Player extends User  {
-    // constructor() {
-    //     this.bankroll = 1000;
-    //     this.name = "";
-    // }
-    
-
-
     split() {
         let handSizeEqualTwo = (this.hand.length === 2);
         let bothCardsHaveEqualValue = this.hand[0].value === this.hand[1].value;
@@ -720,22 +660,10 @@ class Deck{
     }
  }
 
-
-
-const blackjackGame = new Game();
-
-
-function startGame() {
-    var startGameBtn = document.getElementById("start-control-btn");
-    startGameBtn.style.display = "none";
-    blackjackGame.clearHandAndAwaitUserBet();
-}
-
-
 //online/offline api stuff
 const checkOnlineStatus = async () => {
     try {
-      const online = await fetch("https://bet.sbgcdn.com/content/cadmin/700f32ed29c1554daddeb32776c4aa04.jpg");
+      const online = await fetch("https://bet.sbgcdn.com/content/cadmin/700f32ed29c1554daddeb32776c4aa04.jpg", {cache: "no-store"});
       
       return online.status >= 200 && online.status < 300; // either true or false
     } catch (err) {
@@ -745,29 +673,47 @@ const checkOnlineStatus = async () => {
 
   setInterval(async () => {
     const connected = await checkOnlineStatus();
-    debugger;
-    if (connected) {
-        window.location.href = "https://m.skybet.com/";
-    }
-    else {
-        const statusDisplay = document.getElementById("status");
-        statusDisplay.textContent = "Currently Offline";
-        statusDisplay.style.color = "red";
-    }
+    
+    displayRedirectPopUp(connected);
 
-
-    }, 3000);
+    }, 30000);
 
   window.addEventListener("load", async (event) => {
-    const statusDisplay = document.getElementById("status");
-    statusDisplay.textContent = (await checkOnlineStatus())
-      ? "Online"
-      : "Offline";
+    displayRedirectPopUp(await checkOnlineStatus());
   });
 
 
+function displayRedirectPopUp(connection) {
+    if (connection && remindMe) {
+        const popUp = document.getElementById("status-popup");
+        popUp.style.display = "block";
+    }
+}
+
+function hideRedirectPopUp(){
+    const popUp = document.getElementById("status-popup");
+    popUp.style.display = "none";
+}
+
+function redirectToSkyBet() {
+    window.location.href = "https://m.skybet.com/";
+}
+
+function setRemindMeAboutRedirect() {
+    const checkbox = document.getElementById("remind-checkbox");
+    remindMe = !checkbox.checked;
+}
 
 
+// init game and function to start
+
+var blackjackGame = new Game();
+
+function startGame() {
+    document.getElementById("overlay").style.display = "none";
+    blackjackGame.clearHandAndAwaitUserBet();
+}
 
 
+var remindMe = true;
 

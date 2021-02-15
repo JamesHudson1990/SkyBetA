@@ -6,6 +6,7 @@
     <title>Blackjack</title>
     <link rel="stylesheet" href="CSS/style.css">
     <script src="JS/script.js"></script>
+    <script src="https://kit.fontawesome.com/44d61e00dc.js" crossorigin="anonymous"></script>
 </head>
  <!--
 ##############################
@@ -13,9 +14,30 @@ Main Game Code
 ##############################
  --> 
 <body>
-    <div id="overlay"> 
+    <!--
+    <div class="top-menu">
+        <div><img src="css/skybet.png" alt="Return to skybet" width="100" height="25"></div>
+        <div>Current Bankroll <span id="current-bank-roll"></span></div>
+        <div id="menu-links">
+            <a href="#restart-game">Restart Game</a>
+            <a href="#restart-money">Restart Money</a>
+        </div>
+        <div class="icon" onclick="menuFunction()">
+            <img src="css/menu-icon.png" width="25" height="25">
+        </div>
+    </div>
+     --> 
+    <div class="top-nav" id="this-top-nav">
+        <a href="#logo" class="active"><img src="css/skybet.png" alt="Return to skybet" width="100" height="25"></a>
+        <a href="#bankroll" class="b">Current Bankroll <span id="current-bank-roll"></span></a>
+        <a href="javascript:void(0);" class="icon" onclick="menuFunction()">
+            <img src="css/menu-icon.png" width="25" height="25">
+        </a>
+    </div>
+    <div id="overlay">
+            <a href="#home"><img src="css/skybet.png" alt="Return to skybet" width="100" height="25"></a>
         <div class="container">
-            <button id="start-button" button class="start-control-btn button" onclick="newGame()">
+            <button id="start-button" button class="start-control-btn button" onclick="startGame()">
                 <h3>New Game</h3>
             </button> 
         </div>
@@ -49,11 +71,11 @@ Main Game Code
             </div>  -->
         </div>
     </div>
-    <div class="begin-game">
+    <!-- <div class="begin-game">
         <button id="start-control-btn" class="start-control-btn button" onclick="startGame()">
             <h3>Start Game</h3>
         </button>
-    </div>
+    </div> -->
   <!--
 ##############################
 Player Card Deck
@@ -145,8 +167,25 @@ Player Control Buttons
 
         </div>
     </div>
-    <div class="bet-amount">Current bankroll: <span id="current-bank-roll"></span></div>
     <h1 id="status" style="color: white;"></h1>
+    <div id="status-popup">
+        <div class="popup-container">
+            <h1>Skybet is back online</h1>
+            <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="setRemindMeAboutRedirect()"> </h2>
+            <button id="return-button" button class="start-control-btn button" onclick="redirectToSkyBet()">
+                <h3>Return Now</h3>
+            </button>
+            <button id="keep-playing-button" button class="start-control-btn button" onclick="hideRedirectPopUp()">
+                <h3>Keep Playing</h3>
+            </button>
+        </div>
+    </div>
+    <div id="resultsBox" onclick="blackjackGame.offResultsBox()">
+        <div class="results-container">
+            <h1 id="results-text"></h1>
+            <h3>Press anywhere to continue</h3>
+        </div>
+    </div>
  <!--
 ##############################
 Scripts and stuff
@@ -157,6 +196,16 @@ Scripts and stuff
         function newGame() {
           document.getElementById("overlay").style.display = "none";
         }
-        </script>
+
+        function menuFunction() {
+            var x = document.getElementById("menu-links");
+                if (x.style.display === "block") {
+                     x.style.display = "none";
+            } else {
+                 x.style.display = "block";
+             }
+}
+    
+    </script>
 </body>
 </html>
