@@ -58,7 +58,7 @@
     }
 
     playGame() {     
-       
+        
         this.updateBankrollDisplay();
         this.deck.resetDeck();
         this.deck.shuffle();
@@ -505,25 +505,58 @@
     //
     gameTip()
     {
-        if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
-        {
-        console.log("You should double down");
-        }
+        if(this.dealerHasFaceUpAce())
+            {
+                console.log("In games with 4 or more decks Dont take insurance this is not worth it.");    
+                console.log("In a single game deck like this, the odds are more in your favour so you can take it."); 
+
+                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+                {
+                console.log("Dealer has an ace just take a card.");
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
+                {
+                console.log("Dealer has an ace just take a card.");
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
+                {
+                console.log("Dealer has an ace just take a card.");
+                }
+            }
+        else{
+            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+            {
+            console.log("You should double down");
+            }
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
+            {
+            console.log("You should double down");
+            }
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
+            {
+            console.log("You should double down");
+            }
         
-        else if(this.player.hand[0].numericValue()  === this.player.hand[1].numericValue())
-        {
-        console.log("Split a pair of As or 8s");
-        console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
-        }
-        else
-        {
-            console.log("Testing Testing");
+            else if(this.player.hand[0].numericValue()  === this.player.hand[1].numericValue()) 
+            {// This needs to be adjusted as it calls this with any two pic cards
+            console.log("Split a pair of As or 8s");
+            console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
+            }
+            else if((this.player.hand[0].numericValue())  === 11 &&( this.player.hand[1].numericValue() ===5 )) 
+            {
+                console.log("You should double down");
+            }
+            
+            else
+            {
+                console.log("Testing Testing");
+            }
         }
     
     }
 
 }
-        
+          
 class User {
     constructor() {
         this.hand = [];
@@ -741,10 +774,12 @@ var blackjackGame = new Game();
 
 function startGame() {
 
-    var gameAudio = new Audio('./SOUND/backgroundNoise.mp3'); 
+    var gameAudio = document.getElementById("gameSound");
     gameAudio.loop = true;
-    gameAudio.volume = 0.0;
+    gameAudio.muted = false;
+    gameAudio.volume = 0.25;
     gameAudio.play();
+
     
     document.getElementById("overlay").style.display = "none";
     blackjackGame.clearHandAndAwaitUserBet();

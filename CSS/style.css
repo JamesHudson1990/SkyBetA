@@ -138,52 +138,57 @@ Menu Function
 
 
   .top-nav {
-    overflow: hidden;
-    background-color: rgba(255,255,255, 0.5);
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    margin-bottom: 20px;
+    display: block;
   }
   
-  .top-nav a {
-    float: left;
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-    font-family: Arial, Helvetica, sans-serif;
+  .nav-logo {
+    position: relative;
+    display: inline-block;
   }
   
-  .topnav a.icon {
-    float: right;
-    display: block;
+  .bankroll-button {
+    position: relative;
+    display: inline-block;
+    height: 25px;
+    width: 180px;
+    color: cornsilk;
+    background-color: #237901;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
   }
   
   .nav-right {
-      float: right;
-  }
-
-  .settings-menu-btn {
-    cursor: pointer;
+      position: relative;
+      display: inline-block;
   }
     
   .settings-menu {
     display: none;
     position: absolute;
     right: 0;
-    background-color: rgba(255,255,255, 0.5);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    width: 180px;
+    margin-top: 10px;
+    background-color: #237901;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
   }
   
   .settings-menu a {
-    color: black;
-    padding: 12px 16px;
+    color: cornsilk;
     text-decoration: none;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
     display: block;
   }
   
-  .settings-menu a:hover {background-color: #f1f1f1}
+  .settings-menu a:hover {background-color: #AB2727;}
   
   .nav-right:hover .settings-menu {
     display: block;
@@ -192,7 +197,6 @@ Menu Function
   .settings-menu-btn {
     height: 25px;
     width: 180px;
-    margin-top: 5px;
     color: cornsilk;
     background-color: #237901;
     border-radius: 2px;
@@ -538,4 +542,8 @@ Button decorations
     border: 1px solid black;
     background: rgb(0,0,0);
     background: linear-gradient(0deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 100%);
+}
+
+.sound-control-btn {
+    background-color: transparent;
 }
