@@ -203,19 +203,14 @@ Player Control Buttons
         </div>
     </div>
 </div>
-    <div>
-        <!-- <button id = "sound-button" class = "sound-control-btn button"  onclick = "toggleSound()">
-            <audio scr = "./SOUND/backgroundNoise.mp3" loop = true volume = 0.25 muted = false>
-            <img src="./CSS/pinkSoundOn.png" alt="Sound" width="25" height="25">
-        </button> -->
 
-        <audio id="gameSound">
-            <source scr="backgroundNoise.mp3" type="audio/mpeg"> 
-        </audio>
+<audio id="gameSound">
+    <source src="./SOUND/backgroundNoise.mp3" type="audio/mpeg"> 
+</audio>
 
-        <button id="sound-button" class="sound-control-btn button" onclick="toggleSound()">
-            <img id="sound-button-img" src="./CSS/pinkSoundOn.png" alt="Sound" width="40" height="40">
-        </button>
+<button id="sound-button" class="sound-control-btn button" onclick="toggleSound()">
+    <img id="sound-button-img" src="./CSS/pinkSoundOn.png" alt="Sound" width="40" height="40">
+</button>
 
 
 
@@ -225,52 +220,6 @@ Scripts and stuff
 ##############################
  --> 
     <script>
-
-
-
-        function toggleSound(){
-            var gameAudio = document.getElementById("gameSound");
-            var audioButton = document.getElementById("sound-button-img");
-            if(gameAudio.muted == false)
-            {
-                gameAudio.muted = true;
-                audioButton.src = "./CSS/pinkSoundOff.png";
-            }
-            else
-            {
-                gameAudio.muted = false;
-                audioButton.src = "./CSS/pinkSoundOn.png";
-            }
-            
-
-        }
-
-
-        // window.onload = function() {
-        //     document.getElementById("gameAudio").loop = true;
-        //     document.getElementById("gameAudio").play();
-        // }
-        // window.onload = function(){
-        //     gameAudio = new Audio('./SOUND/backgroundNoise.mp3'); 
-        //     gameAudio.loop = true;       
-        //     gameAudio.play();
-        // }
-
-
-        // if (typeof gameAudio.loop == 'boolean'){
-        //     gameAudio.loop = true;
-        // }
-        // else
-        // {
-        //     gameAudio.addEventListener('ended', function() {
-        //     this.currentTime = 0;
-        //     this.play();
-        // }   ,false);
-        // }
-        function newGame() {
-          document.getElementById("overlay").style.display = "none";
-        }
-
         function menuFunction() {
             var x = document.getElementById("settings-menu");
                 if (x.style.display === "block") {
@@ -280,7 +229,6 @@ Scripts and stuff
              }
             }
 
-        
     </script>
     </body>
 </html>
