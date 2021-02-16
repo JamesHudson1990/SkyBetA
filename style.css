@@ -1,0 +1,377 @@
+body
+{
+    margin: 0;
+    padding: 0;
+    font-family: "Brush Script MT", Arial, sans-serif;
+    font-size: 18px;
+    overflow: hidden;
+}
+
+  html { 
+    background: url(bg.png) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+
+   /* 
+##############################
+Game Overlay
+##############################
+*/
+
+#overlay {
+    position: fixed;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(bg.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    z-index: 2;
+  }
+
+.container {
+    position: relative;
+    top: 50%;
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: whitesmoke;
+}
+
+/* 
+##############################
+Dealer Deck
+##############################
+*/
+
+
+.dealer-hand-show {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 
+##############################
+Card Deck
+##############################
+*/
+
+.card-deck {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+}
+
+.card-show {
+    background-color: #ffffff;
+    height: 200px;
+    width: 125px;
+    margin: 10px;
+    text-align: center;
+    font-size: 4rem;
+    border-radius: 2px;
+    box-shadow: 5px 5px 3px;
+    line-height: 200px;
+}
+
+.card-is-red {
+    color: red;
+}
+
+.card-hidden {
+    background-color: #460008;
+    height: 200px;
+    width: 125px;
+    margin: 10px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 2px;
+    box-shadow: 5px 5px 3px;
+}
+
+.card-is-red {
+  color: red;
+}
+.card-topleft {
+  position: absolute;
+  top: 0.5em;
+  left: 0.75em;
+}
+.card-bottomright {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.75em;
+  transform: rotate(180deg);
+}
+.card-corner-rank, .card-corner-suit {
+  width: 1em;
+  text-align: center;
+  transform: translate(-50%, 0);
+}
+
+.card-suits {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 17.5%;
+    height: 25%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .card-suit {
+    font-size: 1em;
+    position: absolute;
+  }
+  
+  .card-suit.mirrored {
+    transform: rotate(180deg);
+  }
+
+/* 
+##############################
+Start Game Control Button..etc
+##############################
+*/
+
+.begin-game {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 
+##############################
+Player Deck
+##############################
+*/
+
+.player-hand-show {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;   
+}
+
+.player-controls {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+.bet-amount {
+    font-family: sans-serif;
+    font-style: bold;
+    color: whitesmoke;
+}
+
+/* 
+##############################
+Player Action Control Buttons
+##############################
+*/
+
+.control-btn-hit {
+    height: 50px;
+    width: 180px;
+    margin-top: 5px;
+    color: cornsilk;
+    background-color: #237901;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-stand {
+    height: 50px;
+    width: 180px;
+    background-color: #750DD2;
+    margin-top: 5px;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-double {
+    height: 50px;
+    width: 180px;
+    background-color: #1F1611;
+    margin-top: 5px;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-split {
+    height: 50px;
+    width: 180px;
+    background-color: #460008;
+    margin-top: 5px;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-insurance {
+    height: 50px;
+    width: 180px;
+    background-color: #FF5733;
+    margin-top: 5px;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #B89E4B;
+    box-shadow: 5px 5px 3px black;
+    display: none;
+}
+
+.start-control-btn {
+    height: 50px;
+    width: 180px;
+    color: black;
+    background-color: #FF69B4;
+    border-radius: 2px;
+    border: 3px solid #FF69B4;
+    box-shadow: 5px 5px 3px black;
+}
+
+/* 
+##############################
+Player Betting Control Buttons
+##############################
+*/
+
+.control-btn-25 {
+    height: 75px;
+    width: 75px;
+    background-color: #12894D;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-50 {
+    height: 75px;
+    width: 75px;
+    background-color: #E6C146;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-75 {
+    height: 75px;
+    width: 75px;
+    background-color: #1D2E77;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-100 {
+    height: 75px;
+    width: 75px;
+    background-color: #FF69B4;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+
+.control-btn-bet {
+    height: 50px;
+    width: 180px;
+    background-color: #AB2727;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+    margin-left: 10px;
+}
+
+.balance-amount {
+    width: 180px;
+    height: 50px;
+    background-color: black;
+    color: cornsilk;
+    border-radius: 2px;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+    margin-right: 10px;
+}
+
+/* 
+##############################
+Button decorations
+##############################
+*/
+
+.button {
+    transition-duration: 0.4s;
+    cursor: pointer;
+    transition: transform .2s;
+}
+
+.button:hover {
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Safari 3-8 */
+    transform: scale(1.2); 
+}
+
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#actionControls {
+    display: none;
+}
+
+#bettingControls {
+    display: none;
+}
+
+#bet-btn h3 {
+    display:inline;
+}
+
+#currentBetAmountH3 {
+    color: #f0fa63;
+}
+
+#double-btn {
+    display: none;
+}
+
+#split-btn {
+    display: none;
+}
+
+
+/* #start-control-btn {
+    display:none;
+} */
