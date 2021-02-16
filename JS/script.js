@@ -180,7 +180,7 @@
         this.updateBetAmountButton();
     }
 
-    drawCardFromDeck(handToDrawTo, handDiv) {
+    drawCardFromDeck(handToDrawTo, handDiv, isHidden) {
         let drawnCardArray = this.deck.drawCard();
         handToDrawTo.push(drawnCardArray[0]);
         
@@ -191,28 +191,34 @@
         let HTMLforCard = "";
 
         if (cardIsRed) {
-            HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
+            if (isHidden)
+                HTMLforCard = "<div class=\"card-show card-is-red\" id=\"dealers-hidden-card\"> <span>" + suitAndValue + " </span> </div>";
+            else
+                HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
         }
         else {
-            HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
+            if (isHidden)
+                HTMLforCard = "<div class=\"card-show\" id=\"dealers-hidden-card\"> <span>" + suitAndValue + "</span> </div>";
+            else
+                HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
         }
 
         handDiv.innerHTML = handDiv.innerHTML + HTMLforCard;
     }
 
     initialDeal() {
-        this.dealerDrawsCard();
+        this.dealerDrawsCard(false);
         this.playerDrawsCard();
-        this.dealerDrawsCard();
+        this.dealerDrawsCard(true);
         this.playerDrawsCard();
     }
 
-    dealerDrawsCard() {
-        this.drawCardFromDeck(this.dealer.hand, document.getElementById("dealersHand"));
+    dealerDrawsCard(isHidden) {
+            this.drawCardFromDeck(this.dealer.hand, document.getElementById("dealersHand"), isHidden);
     }
 
     playerDrawsCard() {
-        this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"));
+        this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"), false);
     }
 
     resetDataForRound() {
@@ -361,6 +367,9 @@
 
     dealerPlays() {
         let dealerHandValue = User.getHandValue(this.dealer.hand);
+
+        const dealersHiddenCard = document.getElementById("dealers-hidden-card");
+        dealersHiddenCard.id = "";
 
         if (!User.checkBust(this.dealer.hand))
         {
@@ -783,7 +792,7 @@ function startAudioLoopAndSetVolume() {
     const gameAudio = document.getElementById("gameSound");
     gameAudio.loop = true;
     gameAudio.volume = 0.05;
-    gameAudio.play();
+    //gameAudio.play();
 }
 
 function toggleSound(){
