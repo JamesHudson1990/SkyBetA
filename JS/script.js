@@ -19,6 +19,9 @@
         this.betPlaced = false;
         this.playerHasHit = false;
         this.playing = true;
+        this.hasSplit = false;
+        this.hand1played = false;
+        this.hand2played = true;
 
         //check if data is saved for bankroll and update
         if(parseInt(localStorage.bankroll))
@@ -66,6 +69,7 @@
 
         this.hideInsuranceButton();
         this.hideSplitButton();
+        this.hideDoubleDownButton();
 
         this.showActionControls();
         this.gameTip();
@@ -87,7 +91,7 @@
     }
 
     increaseBetByAmount(amountToIncrease) {
-        if (this.player.bankroll > (this.betAmount + amountToIncrease)){
+        if (this.player.bankroll >= (this.betAmount + amountToIncrease)){
             this.betAmount += amountToIncrease;
             this.updateBetAmountDisplay();
         }
@@ -147,7 +151,9 @@
             this.showSplitButton();
         }
 
-        this.showDoubleDownButton();
+        
+        if(this.betAmount <= this.player.bankroll)
+            this.showDoubleDownButton();
     }
     
     hideBettingControls() {
@@ -266,11 +272,14 @@
     }
 
     checkResults(handToCheck, betAmountForHand) {
-        let resultsString = "";
         this.hideActionControls();
-        this.dealerPlays();
-
+        let resultsString = "";
+        
         let playerHasBlackjack = this.checkForBlackjack(handToCheck);
+
+        if(!playerHasBlackjack)
+            this.dealerPlays();
+
         let playerIsBust = User.checkBust(handToCheck);
         let dealerIsBust = User.checkBust(this.dealer.hand);
         let dealerHasBlackjack = this.checkForBlackjack(this.dealer.hand);
@@ -313,6 +322,7 @@
                 resultsString += "Your insurance flopped. ";
             }
         }
+        this.hideInsuranceTakenIndicator();
 
         this.showEndOfHandAnimation(resultsString);
     }
@@ -333,9 +343,10 @@
         this.hideDoubleDownButton();
         this.playerDrawsCard();
         if (User.checkBust(this.player.hand)){
-            this.checkResults(this.player.hand, this.betAmount);
-        }
-        else {
+            if(this.hasSplit)
+                //do something
+            else
+                this.checkResults(this.player.hand, this.betAmount);
         }
     }
 
@@ -343,10 +354,15 @@
         this.checkResults(this.player.hand, this.betAmount);
     }
 
-    doubleDown() {
+    shiftFocusToSecondHand() {
+            const hand1Div = document.getElementById("playersHand");
+            const hand2Div = document.getElementById("playersHand2");
 
-        if(this.betAmount < this.player.bankroll)
-        {
+            hand1Div.className = "";
+            hand2Div.className = "active-hand";
+    }
+
+    doubleDown() {
             this.doubledDown = true;
 
             this.player.bankroll -= this.betAmount;
@@ -358,11 +374,8 @@
 
             this.playerDrawsCard();
             this.stand();
-        }
-        else
-        {
-            console.log("You do not have the facilities for this big man");
-       }
+        
+       
     }
 
     dealerPlays() {
@@ -390,41 +403,41 @@
             return false;
     }
 
-    playerPlays(handBeingPlayed, betAmountForHand) {
+    // playerPlays(handBeingPlayed, betAmountForHand) {
 
-        let stillPlaying = true;
-        while(!this.player.bust && stillPlaying) {
-            switch(playerOption) {
-                case '1':
-                    this.hit(handBeingPlayed);
-                    break;
-                case '2':
-                    stillPlaying = false;
-                    break;
-                case '3':
-                    if (!this.player.hasSplit) {
-                        this.playerSplits();
-                        stillPlaying = false;
-                    }
-                    else
-                        console.log("You have already split!")
-                    break;
-                case '4':
-                    this.doubleDown(betAmountForHand);
-                    this.hit(handBeingPlayed);
-                    stillPlaying = false;
-                    break;
-                case '5':
-                    if (!this.insuranceTaken){
-                        this.takeInsurance();
-                    }
-                    else{
-                        console.log("You have already taken out insurance against the dealers hand.")
-                    }
-                    break;
-            }
-        }
-    }
+    //     let stillPlaying = true;
+    //     while(!this.player.bust && stillPlaying) {
+    //         switch(playerOption) {
+    //             case '1':
+    //                 this.hit(handBeingPlayed);
+    //                 break;
+    //             case '2':
+    //                 stillPlaying = false;
+    //                 break;
+    //             case '3':
+    //                 if (!this.player.hasSplit) {
+    //                     this.playerSplits();
+    //                     stillPlaying = false;
+    //                 }
+    //                 else
+    //                     console.log("You have already split!")
+    //                 break;
+    //             case '4':
+    //                 this.doubleDown(betAmountForHand);
+    //                 this.hit(handBeingPlayed);
+    //                 stillPlaying = false;
+    //                 break;
+    //             case '5':
+    //                 if (!this.insuranceTaken){
+    //                     this.takeInsurance();
+    //                 }
+    //                 else{
+    //                     console.log("You have already taken out insurance against the dealers hand.")
+    //                 }
+    //                 break;
+    //         }
+    //     }
+    // }
 
 
     displayHand(handToDisplay) {
@@ -445,42 +458,78 @@
     }
 
     playerSplits() {
-        if(this.betAmount < this.player.bankroll)
-        {
         this.player.splitHand();
+        this.hasSplit = true;
         //bet for same amount
         this.splitBetAmount = this.betAmount;
         this.player.bankroll -= this.splitBetAmount;
         this.player.updateLocalStorageBankroll();
         this.displayBankroll();
 
-        //add card to each hand
-        this.drawCardFromDeck(this.player.hand);
-        this.drawCardFromDeck(this.player.hand2);
 
-        console.log("first hand")
-        this.displayHand(this.player.hand);
+        const hand1Div=document.getElementById("playersHand");
+        const hand2Div=document.getElementById("playersHand2");
+        this.drawCardFromDeck(this.player.hand, hand1Div, false);
+        this.drawCardFromDeck(this.player.hand2, hand2Div, false);
 
-        console.log("second hand")
-        this.displayHand(this.player.hand2);
+        this.renderHandsFromScratchAfterSplit();
+        debugger;
 
-        console.log("playing first hand")
-        this.playerPlays(this.player.hand, this.betAmount);
+    }
 
-        console.log("playing second hand")
-        this.playerPlays(this.player.hand2, this.splitBetAmount);
+    renderHandsFromScratchAfterSplit() {
+        const hand1Div = document.getElementById("playersHand");
+        const hand2Div = document.getElementById("playersHand2");
+
+        hand1Div.innerHTML = "";
+        hand2Div.innerHTML = "";
+
+        hand2Div.style.display = "flex";
+
+        for(let card of this.player.hand) {
+            let cardIsRed = ((card.suit === '♥') || (card.suit === '♦'));
+            let suitAndValue = "" + card.suit + card.value;
+            let HTMLforCard = "";
+
+            if (cardIsRed)
+                    HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
+            else
+                    HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
+
+            hand1Div.innerHTML = hand1Div.innerHTML + HTMLforCard;
         }
-        else
-        {
-            console.log("You do not have the facilities for this big man");
-            this.displayHand(this.player.hand);            
+
+        for(let card of this.player.hand2) {
+            let cardIsRed = ((card.suit === '♥') || (card.suit === '♦'));
+            let suitAndValue = "" + card.suit + card.value;
+            let HTMLforCard = "";
+
+            if (cardIsRed)
+                    HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
+            else
+                    HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
+
+            hand2Div.innerHTML = hand2Div.innerHTML + HTMLforCard;
         }
-        
     }
     
+    
+    showInsuranceTakenIndicator() {
+        const visualIndicator = document.getElementById("insurance-taken-visual-indicator");
+        visualIndicator.style.visibility = "visible";
+    }
+
+    hideInsuranceTakenIndicator() {
+        const visualIndicator = document.getElementById("insurance-taken-visual-indicator");
+        visualIndicator.style.visibility = "hidden";
+    }
 
     takeInsurance() {
         this.hideInsuranceButton();
+
+        this.showInsuranceTakenIndicator();
+
+
         console.log("Insurance taken");
         this.insuranceTaken = true;
         this.insuranceBetAmount = this.betAmount/2;
@@ -791,8 +840,8 @@ var remindMe = true;
 function startAudioLoopAndSetVolume() {
     const gameAudio = document.getElementById("gameSound");
     gameAudio.loop = true;
-    gameAudio.volume = 0.05;
-    //gameAudio.play();
+    gameAudio.volume = 0.0;
+    gameAudio.play();
 }
 
 function toggleSound(){

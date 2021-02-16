@@ -173,8 +173,7 @@ Menu Function
     display: none;
     position: absolute;
     right: 0;
-    width: 180px;
-    margin-top: 10px;
+    width: 170px;
     background-color: #237901;
     border-radius: 2px;
     border: 3px solid #B89E4B;
@@ -185,6 +184,7 @@ Menu Function
     color: cornsilk;
     text-decoration: none;
     font-size: 12px;
+    padding: 12px 16px;
     font-family: Arial, Helvetica, sans-serif;
     display: block;
   }
@@ -254,19 +254,17 @@ Card Deck
     height: 200px;
     width: 125px;
     margin: 10px;
+    color: #2b0106;
     text-align: center;
     font-size: 15px;
     border-radius: 2px;
-    box-shadow: 5px 5px 3px;
+    box-shadow: 5px 5px 3px #460008;
 }
 
 #dealers-hidden-card span {
     visibility: hidden;
 }
 
-.card-is-red {
-  color: red;
-}
 .card-topleft {
   position: absolute;
   top: 0.5em;
@@ -557,4 +555,82 @@ Button decorations
     position: fixed;
     bottom: 0;
     left: 0;
+}
+
+#insurance-taken-visual-indicator {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    border: 1px solid black;
+    background-color: rgba(0,0,0,0.8);
+    padding: 10px;
+    margin: auto;
+}
+
+#insurance-taken-visual-indicator h1 {
+    color: yellowgreen;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+/* pop-up style styles */
+
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #12894D;
+    color: cornsilk;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #B89E4B;
+  }
+
+  .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+
+/* pop-up animation */
+
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+
+.active-hand {
+      background-color: #002A91;
 }

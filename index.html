@@ -35,7 +35,7 @@ Top Menu
             <img src="css/skybet.png" alt="Return to skybet" width="100" height="25">
         </div>
         <button class="bankroll-button">
-                Current Bankroll: <span id="current-bank-roll"></span>
+                Current Bankroll: £<span id="current-bank-roll"></span>
         </button>
         <div class="nav-right">        
                 <button class="settings-menu-btn">
@@ -99,38 +99,13 @@ Player Card Deck
 ##############################
  -->    
     <div class="player-hand-show">
-        <h2>Player Hand</h2>
-        <div class="bet-amount">Current bet amount: <span id="current-bet-amount"></span></div>
-        <div class="card-deck" id="playersHand">
-<!-- 
-            <div id="playersFirstCard" class="card-show card-is-red">♥K</div>
-            <div id="playersSecondCard" class="card-show card-is-red">♥A</div> -->
-
-            <!-- <div class="card-show">
-                <div class="card-suits">
-                    ♥
-                </div>
-                <div class="card-topleft">
-                    <div class="card-corner-rank">9</div>
-                    <div class="card-corner-suit">♥</div>
-                </div>
-                <div class="card-bottomright">
-                    <div class="card-corner-rank">9</div>
-                    <div class="card-corner-suit">♥</div>
-                </div>
-            </div>  -->
-            <!-- <div class="card-show card-is-red">
-                <div class="card-topleft">
-                    <div class="card-corner-rank red">9</div>
-                    <div class="card-corner-suit red">♥</div>
-                </div>
-                <div class="card-bottomright">
-                    <div class="card-corner-rank red">9</div>
-                    <div class="card-corner-suit red">♥</div>
-                </div> -->
-
-                
-    
+        <div class="popup" onclick="testFunc()"><h2>Player Hand</h2>
+            <span class="popuptext" id="myPopup">Insurance Taken</span>
+        </div>
+        <div class="bet-amount">Current bet amount: £<span id="current-bet-amount"></span></div>
+        <div class="card-deck">
+            <div id="playersHand" class="active-hand" style="display: flex;"></div>
+            <div id="playersHand2" style="display: none; margin-left:10%;"></div>
         </div>
     </div>
  <!--
@@ -171,11 +146,10 @@ Player Control Buttons
             <button id="stand-btn" class="control-btn-stand button" onclick="blackjackGame.stand()">
                 <h3>Stand</h3>
             </button>
-            <button id="double-btn" class="control-btn-double button"
-            onclick="blackjackGame.doubleDown()">
+            <button id="double-btn" class="control-btn-double button" onclick="blackjackGame.doubleDown()">
                 <h3>Double</h3>
             </button>
-            <button id="split-btn" class="control-btn-split button">
+            <button id="split-btn" class="control-btn-split button" onclick="blackjackGame.playerSplits()">
                 <h3>Split</h3>
             </button>
             <button id="insurance-btn" class="control-btn-insurance button" onclick="blackjackGame.takeInsurance()">
@@ -204,6 +178,8 @@ Player Control Buttons
     </div>
 </div>
 
+<div id="insurance-taken-visual-indicator" style="visibility: hidden;"><h1>Insurance Taken</h1></div>
+
 <audio id="gameSound">
     <source src="./SOUND/backgroundNoise.mp3" type="audio/mpeg"> 
 </audio>
@@ -228,7 +204,10 @@ Scripts and stuff
                  x.style.display = "block";
              }
             }
-
+        function testFunc() {
+         var popup = document.getElementById("myPopup");
+        popup.classList.toggle("show");
+}
     </script>
     </body>
 </html>
