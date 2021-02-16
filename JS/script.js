@@ -22,8 +22,11 @@
         this.hasSplit = false;
         this.hand1played = false;
         this.hand2played = false;
+        this.dealerHasPlayedAfterSplit = false;
+    
 
         this.currentlySelectedHand = this.player.hand;
+        this.currentlySelectedHandDiv = document.getElementById("playersHand");
         //check if data is saved for bankroll and update
         if(parseInt(localStorage.bankroll))
         {
@@ -214,6 +217,9 @@
     }
 
     initialDeal() {
+        this.currentlySelectedHand = this.player.hand;
+        this.dealerHasPlayedAfterSplit = false;
+
         this.dealerDrawsCard(false);
         this.playerDrawsCard();
         this.dealerDrawsCard(true);
@@ -225,11 +231,10 @@
     }
 
     playerDrawsCard() {
-        this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"), false);
+        this.drawCardFromDeck(this.currentlySelectedHand, this.currentlySelectedHandDiv, false);
     }
 
     resetDataForRound() {
-        
         this.clearHands();
         this.betAmount = 0;
         this.splitBetAmount = 0;
@@ -244,9 +249,24 @@
         this.player.clearHand();
         this.dealer.clearHand();
 
-        //actually update the gui
-        document.getElementById("dealersHand").innerHTML = '';
-        document.getElementById("playersHand").innerHTML = '';
+        //actually update the gui, first get the divs that contain the cards
+        const playersHand1Div = document.getElementById("playersHand");
+        const playersHand2Div = document.getElementById("playersHand2");
+
+        const dealersHandDiv = document.getElementById("dealersHand");
+
+        //hard reset the players first hand to the default (active-hand) and hide the 2nd hand
+        playersHand1Div.className = "active-hand";
+        playersHand2Div.className = "";
+        playersHand2Div.style.display = "none";
+
+        //set currentlySelectedHandDiv back to first hand
+        this.currentlySelectedHandDiv = playersHand1Div;
+
+        //remove the cards from both players hands and the dealers
+        playersHand1Div.innerHTML = "";
+        playersHand2Div.innerHTML = "";
+        dealersHandDiv.innerHTML = "";
     }
 
     dealerHasFaceUpAce() {
@@ -287,19 +307,30 @@
 
         let playerHasSplitAndPlayedBothHands = this.hasSplit && this.hand1played;
 
-        if(playerHasSplitAndNotPlayedSecondHandYet)  {
+        if(playerHasSplitAndPlayedBothHands)  {
             this.hand2played = true;
         }
 
         if (this.hasSplit && this.hand1played && this.hand2played) {
             //player has split and played both their hands
             //reset the boolean flags and then checkresults for both hands
+            
             this.hasSplit = false;
             this.hand1played = false;
             this.hand2played = false;
 
-            this.checkResults(this.player.hand1, this.betAmount);
+            if(!this.dealerHasPlayedAfterSplit) {
+                this.dealerHasPlayedAfterSplit = true;
+                this.dealerPlays(); 
+            }//infinite looping here
+
+            
+            this.checkResults(this.player.hand, this.betAmount);
             this.checkResults(this.player.hand2, this.betAmount);
+
+
+            //break from this method once both hands have been checked for
+            return;
         }
 
 
@@ -308,7 +339,8 @@
         let playerHasBlackjack = this.checkForBlackjack(handToCheck);
 
         if(!playerHasBlackjack)
-            this.dealerPlays();
+            if(!this.player.hasSplit)
+                this.dealerPlays();
 
         let playerIsBust = User.checkBust(handToCheck);
         let dealerIsBust = User.checkBust(this.dealer.hand);
@@ -392,6 +424,7 @@
             hand2Div.className = "active-hand";
 
             this.currentlySelectedHand = this.player.hand2;
+            this.currentlySelectedHandDiv = hand2Div;
     }
 
     doubleDown() {
@@ -406,8 +439,6 @@
 
             this.playerDrawsCard();
             this.stand();
-        
-       
     }
 
     dealerPlays() {
@@ -428,49 +459,12 @@
     }
 
     checkForBlackjack(handToCheckForBlackjack) {
-        if((handToCheckForBlackjack.length === 2) && (User.getHandValue(handToCheckForBlackjack) === 21)){
-            return true
+        if((handToCheckForBlackjack.length == 2) && (User.getHandValue(handToCheckForBlackjack) === 21)){
+            return true;
         }
         else 
             return false;
     }
-
-    // playerPlays(handBeingPlayed, betAmountForHand) {
-
-    //     let stillPlaying = true;
-    //     while(!this.player.bust && stillPlaying) {
-    //         switch(playerOption) {
-    //             case '1':
-    //                 this.hit(handBeingPlayed);
-    //                 break;
-    //             case '2':
-    //                 stillPlaying = false;
-    //                 break;
-    //             case '3':
-    //                 if (!this.player.hasSplit) {
-    //                     this.playerSplits();
-    //                     stillPlaying = false;
-    //                 }
-    //                 else
-    //                     console.log("You have already split!")
-    //                 break;
-    //             case '4':
-    //                 this.doubleDown(betAmountForHand);
-    //                 this.hit(handBeingPlayed);
-    //                 stillPlaying = false;
-    //                 break;
-    //             case '5':
-    //                 if (!this.insuranceTaken){
-    //                     this.takeInsurance();
-    //                 }
-    //                 else{
-    //                     console.log("You have already taken out insurance against the dealers hand.")
-    //                 }
-    //                 break;
-    //         }
-    //     }
-    // }
-
 
     displayHand(handToDisplay) {
         for (let card of handToDisplay) {
@@ -568,29 +562,7 @@
         this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
-    
-    // METHODS FOR TESTING
-    // givePlayerBlackJack() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let tenOfSpades = new Card("♠","10");
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(tenOfSpades);
-    // }
 
-    giveDealerBlackJack() {
-        let aceOfSpades = new Card("♠","A"); 
-        let tenOfSpades = new Card("♠","10");
-        this.dealer.hand.push(aceOfSpades);
-        this.dealer.hand.push(tenOfSpades);
-    }
-
-    // givePlayerTwoAces() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let aceOfDiamonds = new Card("♦","A"); 
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(aceOfDiamonds);
-    // }
-    //
     gameTip()
     {
         if(this.dealerHasFaceUpAce())
@@ -651,10 +623,12 @@ class User {
         this.bankroll = 1000;
         this.bust = false;
         this.hasSplit = false;
+        this.hand2 = [];
     }
     
     clearHand() {
         this.hand = [];
+        this.hand2 = [];
     }
 
     static getHandValue(handToCalculateValueFor) {
@@ -701,7 +675,6 @@ class User {
 
     splitHand() {
         this.hasSplit = true;
-        this.hand2 = [];
 
         const cardToAddToHand2 = this.hand.slice(-1);
         this.hand2.push(cardToAddToHand2[0]);
