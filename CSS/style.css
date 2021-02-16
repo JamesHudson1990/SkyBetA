@@ -552,3 +552,9 @@ Button decorations
 .sound-control-btn {
     background-color: transparent;
 }
+
+#sound-button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
