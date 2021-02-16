@@ -22,8 +22,10 @@
         this.hasSplit = false;
         this.hand1played = false;
         this.hand2played = false;
+    
 
         this.currentlySelectedHand = this.player.hand;
+        this.currentlySelectedHandDiv = document.getElementById("playersHand");
         //check if data is saved for bankroll and update
         if(parseInt(localStorage.bankroll))
         {
@@ -214,6 +216,8 @@
     }
 
     initialDeal() {
+        this.currentlySelectedHand = this.player.hand;
+
         this.dealerDrawsCard(false);
         this.playerDrawsCard();
         this.dealerDrawsCard(true);
@@ -225,11 +229,10 @@
     }
 
     playerDrawsCard() {
-        this.drawCardFromDeck(this.player.hand, document.getElementById("playersHand"), false);
+        this.drawCardFromDeck(this.currentlySelectedHand, this.currentlySelectedHandDiv, false);
     }
 
     resetDataForRound() {
-        
         this.clearHands();
         this.betAmount = 0;
         this.splitBetAmount = 0;
@@ -244,9 +247,24 @@
         this.player.clearHand();
         this.dealer.clearHand();
 
-        //actually update the gui
-        document.getElementById("dealersHand").innerHTML = '';
-        document.getElementById("playersHand").innerHTML = '';
+        //actually update the gui, first get the divs that contain the cards
+        const playersHand1Div = document.getElementById("playersHand");
+        const playersHand2Div = document.getElementById("playersHand2");
+
+        const dealersHandDiv = document.getElementById("dealersHand");
+
+        //hard reset the players first hand to the default (active-hand) and hide the 2nd hand
+        playersHand1Div.className = "active-hand";
+        playersHand2Div.className = "";
+        playersHand2Div.style.display = "none";
+
+        //set currentlySelectedHandDiv back to first hand
+        this.currentlySelectedHandDiv = playersHand1Div;
+
+        //remove the cards from both players hands and the dealers
+        playersHand1Div.innerHTML = "";
+        playersHand2Div.innerHTML = "";
+        dealersHandDiv.innerHTML = "";
     }
 
     dealerHasFaceUpAce() {
@@ -287,7 +305,7 @@
 
         let playerHasSplitAndPlayedBothHands = this.hasSplit && this.hand1played;
 
-        if(playerHasSplitAndNotPlayedSecondHandYet)  {
+        if(playerHasSplitAndPlayedBothHands)  {
             this.hand2played = true;
         }
 
@@ -392,6 +410,7 @@
             hand2Div.className = "active-hand";
 
             this.currentlySelectedHand = this.player.hand2;
+            this.currentlySelectedHandDiv = hand2Div;
     }
 
     doubleDown() {
@@ -406,8 +425,6 @@
 
             this.playerDrawsCard();
             this.stand();
-        
-       
     }
 
     dealerPlays() {
@@ -434,43 +451,6 @@
         else 
             return false;
     }
-
-    // playerPlays(handBeingPlayed, betAmountForHand) {
-
-    //     let stillPlaying = true;
-    //     while(!this.player.bust && stillPlaying) {
-    //         switch(playerOption) {
-    //             case '1':
-    //                 this.hit(handBeingPlayed);
-    //                 break;
-    //             case '2':
-    //                 stillPlaying = false;
-    //                 break;
-    //             case '3':
-    //                 if (!this.player.hasSplit) {
-    //                     this.playerSplits();
-    //                     stillPlaying = false;
-    //                 }
-    //                 else
-    //                     console.log("You have already split!")
-    //                 break;
-    //             case '4':
-    //                 this.doubleDown(betAmountForHand);
-    //                 this.hit(handBeingPlayed);
-    //                 stillPlaying = false;
-    //                 break;
-    //             case '5':
-    //                 if (!this.insuranceTaken){
-    //                     this.takeInsurance();
-    //                 }
-    //                 else{
-    //                     console.log("You have already taken out insurance against the dealers hand.")
-    //                 }
-    //                 break;
-    //         }
-    //     }
-    // }
-
 
     displayHand(handToDisplay) {
         for (let card of handToDisplay) {
@@ -568,29 +548,7 @@
         this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
-    
-    // METHODS FOR TESTING
-    // givePlayerBlackJack() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let tenOfSpades = new Card("♠","10");
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(tenOfSpades);
-    // }
 
-    giveDealerBlackJack() {
-        let aceOfSpades = new Card("♠","A"); 
-        let tenOfSpades = new Card("♠","10");
-        this.dealer.hand.push(aceOfSpades);
-        this.dealer.hand.push(tenOfSpades);
-    }
-
-    // givePlayerTwoAces() {
-    //     let aceOfSpades = new Card("♠","A"); 
-    //     let aceOfDiamonds = new Card("♦","A"); 
-    //     this.player.hand.push(aceOfSpades);
-    //     this.player.hand.push(aceOfDiamonds);
-    // }
-    //
     gameTip()
     {
         if(this.dealerHasFaceUpAce())
@@ -651,10 +609,12 @@ class User {
         this.bankroll = 1000;
         this.bust = false;
         this.hasSplit = false;
+        this.hand2 = [];
     }
     
     clearHand() {
         this.hand = [];
+        this.hand2 = [];
     }
 
     static getHandValue(handToCalculateValueFor) {
@@ -701,7 +661,6 @@ class User {
 
     splitHand() {
         this.hasSplit = true;
-        this.hand2 = [];
 
         const cardToAddToHand2 = this.hand.slice(-1);
         this.hand2.push(cardToAddToHand2[0]);
@@ -862,6 +821,8 @@ function startGame() {
 
     startAudioLoopAndSetVolume();
     document.getElementById("overlay").style.display = "none";
+    
+    debugger;
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
