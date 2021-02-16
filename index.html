@@ -167,17 +167,16 @@ Player Control Buttons
 
         </div>
     </div>
-    <h1 id="status" style="color: white;"></h1>
     <div id="status-popup">
         <div class="popup-container">
-            <h1>Skybet is back online</h1>
-            <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="setRemindMeAboutRedirect()"> </h2>
-            <button id="return-button" button class="start-control-btn button" onclick="redirectToSkyBet()">
-                <h3>Return Now</h3>
+            <h1>It looks like you're connected...</h1>
+            <button id="keep-playing-button" button class="popup-btn popup-btn-red" onclick="hideRedirectPopUp()">
+                <h3>Return to game</h3>
             </button>
-            <button id="keep-playing-button" button class="start-control-btn button" onclick="hideRedirectPopUp()">
-                <h3>Keep Playing</h3>
+            <button id="return-button" button class="popup-btn popup-btn-green" onclick="redirectToSkyBet()">
+                <h3>Take me to Sky Bet</h3>
             </button>
+            <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="setRemindMeAboutRedirect()"></h2>
         </div>
     </div>
     <div id="resultsBox" onclick="blackjackGame.offResultsBox()">
