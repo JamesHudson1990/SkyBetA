@@ -21,8 +21,9 @@
         this.playing = true;
         this.hasSplit = false;
         this.hand1played = false;
-        this.hand2played = true;
+        this.hand2played = false;
 
+        this.currentlySelectedHand = this.player.hand;
         //check if data is saved for bankroll and update
         if(parseInt(localStorage.bankroll))
         {
@@ -273,6 +274,35 @@
 
     checkResults(handToCheck, betAmountForHand) {
         this.hideActionControls();
+
+        let playerHasSplitAndNotPlayedSecondHandYet = this.hasSplit && !this.hand1played;
+
+        if(playerHasSplitAndNotPlayedSecondHandYet)  {
+            this.hand1played = true;
+            this.shiftFocusToSecondHand();
+            this.showActionControls();
+            return;
+            //break out of the checkresults method and wait for use to do something with 2nd hand
+        }
+
+        let playerHasSplitAndPlayedBothHands = this.hasSplit && this.hand1played;
+
+        if(playerHasSplitAndNotPlayedSecondHandYet)  {
+            this.hand2played = true;
+        }
+
+        if (this.hasSplit && this.hand1played && this.hand2played) {
+            //player has split and played both their hands
+            //reset the boolean flags and then checkresults for both hands
+            this.hasSplit = false;
+            this.hand1played = false;
+            this.hand2played = false;
+
+            this.checkResults(this.player.hand1, this.betAmount);
+            this.checkResults(this.player.hand2, this.betAmount);
+        }
+
+
         let resultsString = "";
         
         let playerHasBlackjack = this.checkForBlackjack(handToCheck);
@@ -341,17 +371,17 @@
 
     hit() {
         this.hideDoubleDownButton();
+
+        //need to refactor so we can call hit on hand1 or hand2
         this.playerDrawsCard();
-        if (User.checkBust(this.player.hand)){
-            if(this.hasSplit)
-                //do something
-            else
-                this.checkResults(this.player.hand, this.betAmount);
+        if (User.checkBust(this.currentlySelectedHand)){
+            this.checkResults(this.currentlySelectedHand, this.betAmount);
         }
     }
 
     stand() {
-        this.checkResults(this.player.hand, this.betAmount);
+        //need to refactor so we can call hit on hand1 or hand2
+        this.checkResults(this.currentlySelectedHand, this.betAmount);
     }
 
     shiftFocusToSecondHand() {
@@ -360,6 +390,8 @@
 
             hand1Div.className = "";
             hand2Div.className = "active-hand";
+
+            this.currentlySelectedHand = this.player.hand2;
     }
 
     doubleDown() {
@@ -473,8 +505,6 @@
         this.drawCardFromDeck(this.player.hand2, hand2Div, false);
 
         this.renderHandsFromScratchAfterSplit();
-        debugger;
-
     }
 
     renderHandsFromScratchAfterSplit() {
