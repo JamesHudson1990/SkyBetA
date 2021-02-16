@@ -27,6 +27,12 @@
         }
     }
 
+    resetLocalData() {
+        localStorage.clear();
+        this.player.bankroll = 1000;
+        this.updateBankrollDisplay();
+    }
+
     offResultsBox() {
         document.getElementById("resultsBox").style.display = "none";
 
@@ -54,6 +60,10 @@
         this.deck.resetDeck();
         this.deck.shuffle();
         this.initialDeal();
+
+        this.hideInsuranceButton();
+        this.hideSplitButton();
+
         this.showActionControls();
     }
     
@@ -88,6 +98,10 @@
 
     showBettingControls() {
         var bettingControls = document.getElementById("bettingControls");
+
+        this.updateBetAmountButton();
+        this.updateBetAmountDisplay();
+
         bettingControls.style.display = "block";
     }
 
@@ -123,14 +137,13 @@
             this.showInsuranceButton();
         }
        
-        let playerCanSplit = (this.player.hand[0].value === this.player.hand[1].value);
+        let playerCanSplit = (this.player.hand[0].value == this.player.hand[1].value) && ((this.player.bankroll - this.betAmount) > 0);
         if(playerCanSplit)
         {
             this.showSplitButton();
         }
 
         this.showDoubleDownButton();
-
     }
     
     hideBettingControls() {
@@ -220,11 +233,7 @@
     }
 
     dealerHasFaceUpAce() {
-        if (this.dealer.hand[0].value === 'A'){
-            return true;
-        }
-        else
-            return false;
+            return this.dealer.hand[0].value === 'A';
     }
             
     payoutWinnings(amountToPayOut) {
@@ -601,14 +610,13 @@ class Deck{
      }
 
     resetDeck() {
-        let cards = [];
+        this.cards = [];
          for (let suit of SUITS) {
              for (let value of VALUES) {
                  let cardToAdd = new Card(suit, value);
-                 cards.push(cardToAdd);
+                 this.cards.push(cardToAdd);
              }
          }
-         return cards;
      }
 
      drawCard() {
@@ -676,7 +684,7 @@ const checkOnlineStatus = async () => {
     
     displayRedirectPopUp(connected);
 
-    }, 30000);
+    }, 60000);
 
   window.addEventListener("load", async (event) => {
     displayRedirectPopUp(await checkOnlineStatus());
@@ -713,7 +721,6 @@ function startGame() {
     document.getElementById("overlay").style.display = "none";
     blackjackGame.clearHandAndAwaitUserBet();
 }
-
 
 var remindMe = true;
 
