@@ -654,10 +654,8 @@ class Player extends User  {
 }
 
 class Dealer extends User {
-
 }
 
- 
 class Deck{
      constructor() {
          this.cards = this.resetDeck();
@@ -774,17 +772,37 @@ var blackjackGame = new Game();
 
 function startGame() {
 
-    var gameAudio = document.getElementById("gameSound");
-    gameAudio.loop = true;
-    gameAudio.muted = false;
-    gameAudio.volume = 0.25;
-    gameAudio.play();
-
-    
+    startAudioLoopAndSetVolume();
     document.getElementById("overlay").style.display = "none";
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
 var remindMe = true;
 
+function startAudioLoopAndSetVolume() {
+    const gameAudio = document.getElementById("gameSound");
+    gameAudio.loop = true;
+    gameAudio.volume = 0.05;
+    gameAudio.play();
+}
+
+function toggleSound(){
+    var gameAudio = document.getElementById("gameSound");
+    var audioButton = document.getElementById("sound-button-img");
+
+    if(gameAudio.muted)
+    {
+        gameAudio.muted = false;
+        audioButton.src = "./CSS/pinkSoundOn.png";
+    }
+    else
+    {
+        gameAudio.muted = true;
+        audioButton.src = "./CSS/pinkSoundOff.png";
+    }
+}
+
+function newGame() {
+  document.getElementById("overlay").style.display = "none";
+}
    
