@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="CSS/style.css">
     <script src="JS/script.js"></script>
     <script src="https://kit.fontawesome.com/44d61e00dc.js" crossorigin="anonymous"></script>
+    <!-- <audio id="gameAudio" src="./SOUND/backgroundNoise.mp3" ></audio> -->
 </head>
  <!--
 ##############################
-Main Game Code
+Top Menu
 ##############################
  --> 
 <body>
@@ -27,13 +28,29 @@ Main Game Code
         </div>
     </div>
      --> 
+     
+
     <div class="top-nav" id="this-top-nav">
         <a href="#logo" class="active"><img src="css/skybet.png" alt="Return to skybet" width="100" height="25"></a>
         <a href="#bankroll" class="b">Current Bankroll <span id="current-bank-roll"></span></a>
-        <a href="javascript:void(0);" class="icon" onclick="menuFunction()">
-            <img src="css/menu-icon.png" width="25" height="25">
-        </a>
+        <div class="nav-right">        <!--
+            <button id="reset-bank-btn" class="control-btn-bet button" onclick="blackjackGame.resetLocalData()">
+                <h3>Reset Bank Balance</h3>
+            </button>
+             --> 
+                <button class="settings-menu-btn">
+                    <img src="css/menu-icon.png" width="25" height="25">
+                </button>
+                <div class="settings-menu">
+                    <a href="#" onclick="blackjackGame.resetLocalData()">Reset Bank Balance</a>
+                </div>
+        </div>
     </div>
+     <!--
+##############################
+Main Overlay
+##############################
+ --> 
     <div id="overlay">
             <a href="#home"><img src="css/skybet.png" alt="Return to skybet" width="100" height="25"></a>
         <div class="container">
@@ -185,19 +202,42 @@ Player Control Buttons
             <h3>Press anywhere to continue</h3>
         </div>
     </div>
- <!--
-##############################
+    <div>
+        <button id = "sound-button" class = "button" background-image = "./CSS/pinkSoundOn.png" onclick = "toggleSound()"></button>
+    </div> 
+
+<!-- ##############################
 Scripts and stuff
 ##############################
- -->  
+ --> 
     <script>
+        // window.onload = function() {
+        //     document.getElementById("gameAudio").loop = true;
+        //     document.getElementById("gameAudio").play();
+        // }
+        // window.onload = function(){
+        //     gameAudio = new Audio('./SOUND/backgroundNoise.mp3'); 
+        //     gameAudio.loop = true;       
+        //     gameAudio.play();
+        // }
 
+
+        // if (typeof gameAudio.loop == 'boolean'){
+        //     gameAudio.loop = true;
+        // }
+        // else
+        // {
+        //     gameAudio.addEventListener('ended', function() {
+        //     this.currentTime = 0;
+        //     this.play();
+        // }   ,false);
+        // }
         function newGame() {
           document.getElementById("overlay").style.display = "none";
         }
 
         function menuFunction() {
-            var x = document.getElementById("menu-links");
+            var x = document.getElementById("settings-menu");
                 if (x.style.display === "block") {
                      x.style.display = "none";
             } else {

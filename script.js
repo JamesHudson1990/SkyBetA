@@ -278,15 +278,15 @@
 
 
         if (playerHasBlackjack) {
-            console.log("You have blackjack, you win!");
+            console.log("You have blackjack, you win! ");
             this.payoutWinnings(2.5*betAmountForHand);
         }
         else if (playerIsBust) {
-            console.log("You went bust, the House wins");
+            console.log("You went bust, the House wins. ");
             this.displayBankroll();
         }
         else if (dealerHasBlackjack) {
-            console.log("The house has blackjack, the House wins");
+            console.log("The house has blackjack, the House wins. ");
             this.displayBankroll();
         }
         else if(dealerAndPlayerHaveSameHandValue) {

@@ -27,6 +27,8 @@
         }
     }
 
+  
+
     resetLocalData() {
         localStorage.clear();
         this.player.bankroll = 1000;
@@ -55,7 +57,8 @@
         document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
     }
 
-    playGame() {        
+    playGame() {     
+       
         this.updateBankrollDisplay();
         this.deck.resetDeck();
         this.deck.shuffle();
@@ -65,6 +68,7 @@
         this.hideSplitButton();
 
         this.showActionControls();
+        this.gameTip();
     }
     
     
@@ -268,44 +272,42 @@
         let playersHandBeatsDealersHand = User.getHandValue(handToCheck) > User.getHandValue(this.dealer.hand);
 
         if (playerHasBlackjack) {
-            resultsString += "You have blackjack, you win!";
+            resultsString += "You have blackjack, you win! ";
             this.payoutWinnings(2.5*betAmountForHand);
         }
         else if (playerIsBust) {
-            resultsString += "You went bust, the House wins";
+            resultsString += "You went bust, the House wins. ";
             this.displayBankroll();
         }
         else if (dealerHasBlackjack) {
-            resultsString += "The house has blackjack, the House wins";
+            resultsString += "The house has blackjack. ";
             this.displayBankroll();
         }
         else if(dealerAndPlayerHaveSameHandValue) {
-            resultsString += "Push -- you get your bet back";
+            resultsString += "Push, your initial wager is returned. ";
             this.payoutWinnings(betAmountForHand);
         }
         else if(playersHandBeatsDealersHand) {
-            resultsString += "You win!";
+            resultsString += "You win! ";
             this.payoutWinnings(betAmountForHand*2);
         }
         else if(dealerIsBust) {
-            resultsString += "The Dealer bust! You win!";
+            resultsString += "The House bust! You win! ";
                 this.payoutWinnings(betAmountForHand*2);
         }
         else
-        resultsString += "The House wins";
+            resultsString += "The House wins. ";
 
         if(this.insuranceTaken) {
             if(dealerHasBlackjack) {
+                resultsString += "Your insurance paid out. "
                 this.payoutInsurance(); 
             }
             else {
-                resultsString += "Your insurance flopped, you lost $" + (this.betAmount / 2);
+                resultsString += "Your insurance flopped. ";
             }
         }
 
-
-        //show animation
-        //using the string that has been built
         this.showEndOfHandAnimation(resultsString);
     }
 
@@ -501,6 +503,24 @@
     //     this.player.hand.push(aceOfDiamonds);
     // }
     //
+    gameTip()
+    {
+        if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+        {
+        console.log("You should double down");
+        }
+        
+        else if(this.player.hand[0].numericValue()  === this.player.hand[1].numericValue())
+        {
+        console.log("Split a pair of As or 8s");
+        console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
+        }
+        else
+        {
+            console.log("Testing Testing");
+        }
+    
+    }
 
 }
         
@@ -581,6 +601,7 @@ class User {
     updateLocalStorageBankroll() {
         localStorage.setItem('bankroll', this.bankroll);
     }
+    
 }
 
 class Player extends User  {
@@ -666,6 +687,7 @@ class Deck{
             return parseInt(this.value);
         }
     }
+    
  }
 
 //online/offline api stuff
@@ -718,9 +740,16 @@ function setRemindMeAboutRedirect() {
 var blackjackGame = new Game();
 
 function startGame() {
+
+    var gameAudio = new Audio('./SOUND/backgroundNoise.mp3'); 
+    gameAudio.loop = true;
+    gameAudio.volume = 0.0;
+    gameAudio.play();
+    
     document.getElementById("overlay").style.display = "none";
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
 var remindMe = true;
 
+   
