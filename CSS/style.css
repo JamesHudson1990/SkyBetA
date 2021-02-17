@@ -601,7 +601,7 @@ Button decorations
 
 .popup {
     position: absolute;
-    top: 14%;
+    top: 12%;
     left: 5%;
     /* display: inline-block; */
     cursor: pointer;
