@@ -23,8 +23,10 @@
         this.hand1played = false;
         this.hand2played = false;
         this.dealerHasPlayedAfterSplit = false;
+        this.bothHandsCheckedAndPlayed = false;
+        this.firstHandResultsString = "";
+        
     
-
         this.currentlySelectedHand = this.player.hand;
         this.currentlySelectedHandDiv = document.getElementById("playersHand");
         //check if data is saved for bankroll and update
@@ -150,7 +152,7 @@
         }
        
         let playerCanSplit = (this.player.hand[0].value == this.player.hand[1].value) && ((this.player.bankroll - this.betAmount) > 0);
-        if(playerCanSplit)
+        if(playerCanSplit && !this.hasSplit)
         {
             this.showSplitButton();
         }
@@ -219,6 +221,8 @@
     initialDeal() {
         this.currentlySelectedHand = this.player.hand;
         this.dealerHasPlayedAfterSplit = false;
+        this.bothHandsCheckedAndPlayed = false;
+        this.firstHandResultsString = "";
 
         this.dealerDrawsCard(false);
         this.playerDrawsCard();
@@ -294,52 +298,55 @@
 
     checkResults(handToCheck, betAmountForHand) {
         this.hideActionControls();
+        
 
-        let playerHasSplitAndNotPlayedSecondHandYet = this.hasSplit && !this.hand1played;
+        if(!this.bothHandsCheckedAndPlayed) {
+            let playerHasSplitAndNotPlayedSecondHandYet = this.hasSplit && !this.hand1played;
 
-        if(playerHasSplitAndNotPlayedSecondHandYet)  {
-            this.hand1played = true;
-            this.shiftFocusToSecondHand();
-            this.showActionControls();
-            return;
-            //break out of the checkresults method and wait for use to do something with 2nd hand
+            if(playerHasSplitAndNotPlayedSecondHandYet)  {
+                this.hand1played = true;
+                this.shiftFocusToSecondHand();
+                this.showActionControls();
+                return;
+                //break out of the checkresults method and wait for user to do something with 2nd hand
+            }
+
+            let playerHasSplitAndPlayedBothHands = this.hasSplit && this.hand1played;
+
+            if(playerHasSplitAndPlayedBothHands)  {
+                this.hand2played = true;
+            }
+
+            if (this.hasSplit && this.hand1played && this.hand2played) {
+                //player has split and played both their hands
+                //reset the boolean flags and then checkresults for both hands
+                
+                this.hand1played = false;
+                this.hand2played = false;
+
+                if(!this.dealerHasPlayedAfterSplit) {
+                    this.dealerHasPlayedAfterSplit = true;
+                    this.dealerPlays(); 
+                }
+                
+                this.bothHandsCheckedAndPlayed = true;
+
+                this.checkResults(this.player.hand, this.betAmount);
+                this.checkResults(this.player.hand2, this.betAmount);
+                
+                this.hasSplit = false;
+
+                //break from this method once both hands have been checked for
+                return;
+            }
         }
-
-        let playerHasSplitAndPlayedBothHands = this.hasSplit && this.hand1played;
-
-        if(playerHasSplitAndPlayedBothHands)  {
-            this.hand2played = true;
-        }
-
-        if (this.hasSplit && this.hand1played && this.hand2played) {
-            //player has split and played both their hands
-            //reset the boolean flags and then checkresults for both hands
-            
-            this.hasSplit = false;
-            this.hand1played = false;
-            this.hand2played = false;
-
-            if(!this.dealerHasPlayedAfterSplit) {
-                this.dealerHasPlayedAfterSplit = true;
-                this.dealerPlays(); 
-            }//infinite looping here
-
-            
-            this.checkResults(this.player.hand, this.betAmount);
-            this.checkResults(this.player.hand2, this.betAmount);
-
-
-            //break from this method once both hands have been checked for
-            return;
-        }
-
 
         let resultsString = "";
         
         let playerHasBlackjack = this.checkForBlackjack(handToCheck);
 
         if(!playerHasBlackjack)
-            if(!this.player.hasSplit)
+            if(!this.hasSplit)
                 this.dealerPlays();
 
         let playerIsBust = User.checkBust(handToCheck);
@@ -386,7 +393,14 @@
         }
         this.hideInsuranceTakenIndicator();
 
-        this.showEndOfHandAnimation(resultsString);
+
+        if(!this.hasSplit)
+            this.showEndOfHandAnimation(resultsString);
+        else if(this.firstHandResultsString == "")
+            this.firstHandResultsString = resultsString;
+        else
+            this.showEndOfHandAnimation("First hand: " + this.firstHandResultsString + "<br><br>Second hand: " + resultsString);
+            
     }
 
     showEndOfHandAnimation(resultsString) {
@@ -403,8 +417,6 @@
 
     hit() {
         this.hideDoubleDownButton();
-
-        //need to refactor so we can call hit on hand1 or hand2
         this.playerDrawsCard();
         if (User.checkBust(this.currentlySelectedHand)){
             this.checkResults(this.currentlySelectedHand, this.betAmount);
@@ -412,7 +424,6 @@
     }
 
     stand() {
-        //need to refactor so we can call hit on hand1 or hand2
         this.checkResults(this.currentlySelectedHand, this.betAmount);
     }
 
@@ -486,11 +497,12 @@
     playerSplits() {
         this.player.splitHand();
         this.hasSplit = true;
+        this.hideSplitButton();
         //bet for same amount
         this.splitBetAmount = this.betAmount;
         this.player.bankroll -= this.splitBetAmount;
         this.player.updateLocalStorageBankroll();
-        this.displayBankroll();
+        this.updateBankrollDisplay();
 
 
         const hand1Div=document.getElementById("playersHand");
@@ -569,53 +581,76 @@
             {
                 console.log("In games with 4 or more decks Dont take insurance this is not worth it.");    
                 console.log("In a single game deck like this, the odds are more in your favour so you can take it."); 
+                
+                if(this.dealer.hand[0].numericValue() === 10|| this.dealerHasFaceUpAce()){
 
-                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+                    if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+                    {
+                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
+                    }
+                    else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
+                    {
+                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
+                    }
+                    else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
+                    {
+                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
+                    }
+                }
+            }
+        
+           
+        else if (this.dealer.hand[0].numericValue() < 7)
+        {
+            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
                 {
-                console.log("Dealer has an ace just take a card.");
+                console.log("You should double down");
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
                 {
-                console.log("Dealer has an ace just take a card.");
+                console.log("You should double down");
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
                 {
-                console.log("Dealer has an ace just take a card.");
+                console.log("You should double down");
+                }
+                //this.player.hand[0].numericValue()  === this.player.hand[1].numericValue()
+                else if(this.player.hand[0].value === this.player.hand[1].value) 
+                {// This advice should be given anywhere there is a pair *********
+                
+                console.log("Never split on a pair of 5s, 10s Js, Qs or Ks"
+                )
+                }
+                      
+                else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
+                {// This needs to be adjusted so if player has BJ we dont give this advice
+                console.log("If you have a second card ranging from 2 to 7, double down.")
+                }        
+                
+                else
+                {
+                    console.log("Testing Testing");
                 }
             }
-        else{
-            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
-            {
-            console.log("You should double down");
-            }
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
-            {
-            console.log("You should double down");
-            }
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
-            {
-            console.log("You should double down");
-            }
-        
-            else if(this.player.hand[0].numericValue()  === this.player.hand[1].numericValue()) 
-            {// This needs to be adjusted as it calls this with any two pic cards
-            console.log("Split a pair of As or 8s");
-            console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
-            }
-            else if((this.player.hand[0].numericValue())  === 11 &&( this.player.hand[1].numericValue() ===5 )) 
-            {
-                console.log("You should double down");
-            }
+         
             
-            else
+            
+        else
             {
+                if(this.player.hand[0].value === this.player.hand[1].value) 
+                {// This advice should be given anywhere there is a pair *********
+                
+                console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
+                }
+                else
+                {
                 console.log("Testing Testing");
+                }
             }
         }
-    
     }
 
-}
+
           
 class User {
     constructor() {

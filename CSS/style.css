@@ -155,8 +155,6 @@ Menu Function
   .bankroll-button {
     position: relative;
     display: inline-block;
-    height: 25px;
-    width: 180px;
     color: cornsilk;
     background-color: #237901;
     border-radius: 2px;
@@ -196,13 +194,14 @@ Menu Function
   }
   
   .settings-menu-btn {
-    height: 25px;
-    width: 180px;
     color: cornsilk;
     background-color: #237901;
     border-radius: 2px;
     border: 3px solid #B89E4B;
     box-shadow: 5px 5px 3px black;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
 /* 
@@ -258,7 +257,7 @@ Card Deck
     text-align: center;
     font-size: 15px;
     border-radius: 2px;
-    box-shadow: 5px 5px 3px #460008;
+    box-shadow: 5px 5px 3px #270005;
 }
 
 #dealers-hidden-card span {
@@ -632,5 +631,6 @@ Button decorations
   }
 
 .active-hand {
-      background-color: #002A91;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 5px;
 }
