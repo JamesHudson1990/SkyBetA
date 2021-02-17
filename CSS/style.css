@@ -15,6 +15,7 @@ body
     background-size: cover;
   }
 
+
    /* 
 ##############################
 Game Overlay
@@ -57,10 +58,11 @@ Game Overlay
     width: 40%;
     padding: 2%;
     text-align: center;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
     color: #333333;
     background-color: white;
     box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+    z-index: 100;
 }
 
 .popup-container h1 {
@@ -148,25 +150,43 @@ Menu Function
   }
   
   .nav-logo {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    float: left;
   }
   
   .bankroll-button {
-    position: relative;
-    display: inline-block;
-    color: cornsilk;
+    text-align: center;
+    color: rgb(255, 234, 45);
     background-color: #237901;
-    border-radius: 2px;
-    border: 3px solid #B89E4B;
-    box-shadow: 5px 5px 3px black;
+    border: 1px solid #B89E4B;
+    font-size: 2em;
+    padding: 10px;
+  }
+
+  #bankroll-container h3 {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: cornsilk;
+      padding: 0;
+      margin: 0;
+      text-align: center;
   }
   
-  .nav-right {
-      position: relative;
-      display: inline-block;
+  #bankroll-container {
+    font-family: Helvetica;
+    position: fixed;
+    padding: 20px;
+    bottom: 0;
+    right: 0;
+    min-width: 13%;
   }
-    
+  
+ .nav-right {
+     position: relative;
+     float: right;
+ }
   .settings-menu {
     display: none;
     position: absolute;
@@ -200,8 +220,7 @@ Menu Function
     border: 3px solid #B89E4B;
     box-shadow: 5px 5px 3px black;
     margin-bottom: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+    margin-right: 10px;
   }
 
 /* 
@@ -556,6 +575,7 @@ Button decorations
     left: 0;
 }
 
+
 #insurance-taken-visual-indicator {
     position: absolute;
     top: 50%;
@@ -575,9 +595,15 @@ Button decorations
 
 /* pop-up style styles */
 
+#tip-popup-window {
+    display: none;
+}
+
 .popup {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    top: 14%;
+    left: 5%;
+    /* display: inline-block; */
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -586,30 +612,31 @@ Button decorations
 }
 
 .popup .popuptext {
-    visibility: hidden;
+    visibility: show;
     width: 160px;
-    background-color: #12894D;
+    background-color: #12894D;;
     color: cornsilk;
     text-align: center;
     border-radius: 6px;
+    border-color: #E6C146;
     padding: 8px 0;
     position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -80px;
     font-family: Arial, Helvetica, sans-serif;
   }
 
   .popup .popuptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #B89E4B;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-bottom-color: #E6C146;
+	border-top: 0;
+	border-left: 0;
+	margin-left: -10px;
+	margin-top: -20px;
   }
 
   .popup .show {
@@ -633,4 +660,204 @@ Button decorations
 .active-hand {
       background-color: rgba(0, 0, 0, 0.8);
       border-radius: 5px;
+}
+
+
+/* tutorial mode */
+
+
+#tips{
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    position: absolute;
+    text-align: center;
+    font-size: 16;
+
+}
+
+#tips-container {
+    display: block;
+    position: absolute;
+    margin: auto;
+    top: 10%;
+    left:10%;
+    right: 10%;
+    border: 1px solid black;
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+}
+
+#tips-container h1 {
+    font-weight: normal;
+    background: -webkit-linear-gradient(left, #002A91 0,#002A91 20%,#8C1E6E 50%,#D42321 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#tips-container h2 {
+    font-weight: normal;
+    background: -webkit-linear-gradient(left, #002A91 0,#002A91 20%,#8C1E6E 50%,#D42321 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    padding: 0;
+    padding-bottom: 10px;
+    margin: 0;
+}
+
+#tips-blur {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: rgba(0,0,0,0.2);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    font-family: Helvetica;
+}
+
+#tipsLeft {
+    text-align: left;
+    float: left;
+    width: 40%;
+    padding: 10px;
+    /* background-color: rgb(56, 216, 56); */
+    
+}
+
+#tipsRight {
+    text-align: left;
+    float: right;
+    width: 40%;
+    padding: 10px;
+    /* background-color: rgb(238, 57, 57); */
+}
+
+
+#exit-tutorial-button {
+    float: right;
+    border: none;
+    font-size: 2rem;
+    font-weight: bold;
+    background-color: none;
+    color: rgb(61, 61, 61);
+    font-family: arial;
+}
+
+#exit-tutorial-button:hover {
+    color: black;
+}
+
+
+/* Rules Page */
+
+#rulesList{
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    text-align: left;
+    margin-bottom: 2em;
+}
+
+
+#rules-container {
+    display: block;
+    position: absolute;
+    margin: auto;
+    top: 10%;
+    left:10%;
+    right: 10%;
+    border: 1px solid black;
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    
+}
+
+#rules-container h1 {
+    font-weight: normal;
+    background: -webkit-linear-gradient(left, #002A91 0,#002A91 20%,#8C1E6E 50%,#D42321 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#rules-blur {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: rgba(0,0,0,0.2);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    font-family: Helvetica;
+}
+
+
+#exit-rules-button {
+    float: right;
+    border: none;
+    font-size: 2rem;
+    font-weight: bold;
+    background-color: none;
+    color: rgb(61, 61, 61);
+    font-family: arial;
+}
+
+#exit-rules-button:hover {
+    color: black;
+}
+
+/* More Betting Controls */
+
+.show-bet-tokens {
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    text-align: center;
+}
+.small-25-btn {
+    height: 75px;
+    width: 75px;
+    background-color: #12894D;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.small-50-btn {
+    height: 75px;
+    width: 75px;
+    background-color: #E6C146;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.small-75-btn {
+    height: 75px;
+    width: 75px;
+    background-color: #1D2E77;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.small-100-btn {
+    height: 75px;
+    width: 75px;
+    background-color: #FF69B4;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
 }

@@ -107,7 +107,7 @@
     }
     
     updateBetAmountDisplay() {
-        document.getElementById("current-bet-amount").innerHTML = this.betAmount;
+        document.getElementById("current-bet-amount").innerHTML = this.betAmount + this.splitBetAmount;
     }
 
     showBettingControls() {
@@ -332,7 +332,7 @@
                 this.bothHandsCheckedAndPlayed = true;
 
                 this.checkResults(this.player.hand, this.betAmount);
-                this.checkResults(this.player.hand2, this.betAmount);
+                this.checkResults(this.player.hand2, this.splitBetAmount);
                 
                 this.hasSplit = false;
 
@@ -424,7 +424,12 @@
     }
 
     stand() {
-        this.checkResults(this.currentlySelectedHand, this.betAmount);
+        if(this.currentlySelectedHand == this.player.hand){
+            this.checkResults(this.player.hand, this.betAmount);
+        }
+        else if(this.currentlySelectedHand == this.player.hand2){
+            this.checkResults(this.player.hand2, this.splitBetAmount);
+        }
     }
 
     shiftFocusToSecondHand() {
@@ -441,10 +446,16 @@
     doubleDown() {
             this.doubledDown = true;
 
-            this.player.bankroll -= this.betAmount;
-            this.player.updateLocalStorageBankroll();
-            this.betAmount = this.betAmount*2;
+            if(this.currentlySelectedHand == this.player.hand){
+                this.player.bankroll -= this.betAmount;
+                this.betAmount = this.betAmount*2;
+            }
+            else if(this.currentlySelectedHand == this.player.hand2){
+                this.player.bankroll -= this.splitBetAmount;
+                this.splitBetAmount = this.splitBetAmount*2;
+            }
 
+            this.player.updateLocalStorageBankroll();
             this.updateBankrollDisplay();
             this.updateBetAmountDisplay();
 
@@ -579,76 +590,127 @@
     {
         if(this.dealerHasFaceUpAce())
             {
-                console.log("In games with 4 or more decks Dont take insurance this is not worth it.");    
-                console.log("In a single game deck like this, the odds are more in your favour so you can take it."); 
-                
-                if(this.dealer.hand[0].numericValue() === 10|| this.dealerHasFaceUpAce()){
-
-                    if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
-                    {
-                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
-                    }
-                    else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
-                    {
-                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
-                    }
-                    else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
-                    {
-                    console.log("I would not double down, while the dealer has an ace or a 10, just take a card.");
-                    }
-                }
+               
+                this.sendTextToTipPopup("In games with 4 or more decks Dont take insurance this is not worth it.");    
+                this.sendTextToTipPopup("In a single game deck like this, the odds are more in your favour so you can take it."); 
+                this.sendTextToTipPopup("Remember, it is not smart to double against an ace."); 
             }
-        
-           
-        else if (this.dealer.hand[0].numericValue() < 7)
+
+        else if(this.dealer.hand[0].intValue === 10) // Repeat tips for 9 / 8 /7
         {
+            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+            {
+                this.sendTextToTipPopup("I would stand.");
+            }
+
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+            {
+                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
+            }
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
+            {
+                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
+            }
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
+            {
+                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
+            }
+            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 8)
+            {
+                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
+            }
+            else if(this.player.hand[0].value === this.player.hand[1].value) 
+            {// This advice should be given anywhere there is a pair *********
+        
+                this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
+            }
+            else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
+            {// This needs to be adjusted so if player has BJ we dont give this advice
+                sendTextToTipPopup("Dealers hand is too strong to risk a double down, if the face up card was weaker this would be an ideal hand to double.")
+            }  
+        }
+           
+        else if (this.dealer.hand[0].intValue < 7)
+        {
+
+            //debugger
+            
             if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
                 {
-                console.log("You should double down");
+                    this.sendTextToTipPopup("You should double down");
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+                {
+                    this.sendTextToTipPopup("I would stand.");
+                }                
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 || this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 16)
+                { // This rule needs to be adapted
+                    this.sendTextToTipPopup("I would stand.");
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
                 {
-                console.log("You should double down");
+                    this.sendTextToTipPopup("You should double down");
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
                 {
-                console.log("You should double down");
+                    this.sendTextToTipPopup("You should double down");
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 8)
+                {
+                    this.sendTextToTipPopup("You should double down");
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 8)
+                {
+                    this.sendTextToTipPopup("You should hit");
                 }
                 //this.player.hand[0].numericValue()  === this.player.hand[1].numericValue()
                 else if(this.player.hand[0].value === this.player.hand[1].value) 
                 {// This advice should be given anywhere there is a pair *********
                 
-                console.log("Never split on a pair of 5s, 10s Js, Qs or Ks"
-                )
+                    this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
                 }
                       
                 else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
-                {// This needs to be adjusted so if player has BJ we dont give this advice
-                console.log("If you have a second card ranging from 2 to 7, double down.")
+                {
+                    // This needs to be adjusted so if player has BJ we dont give this advice
+                    this.sendTextToTipPopup("If you have a second card ranging from 2 to 7, double down.")
+                    if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() >= 19 )
+                    {
+                        this.sendTextToTipPopup("You should stand.")  
+                    }
+
                 }        
                 
                 else
                 {
-                    console.log("Testing Testing");
+                    this.sendTextToTipPopup("Testing Testing");
                 }
-            }
-         
-            
+            }    
             
         else
             {
                 if(this.player.hand[0].value === this.player.hand[1].value) 
-                {// This advice should be given anywhere there is a pair *********
+                {
                 
-                console.log("Never split on a pair of 5s, 10s Js, Qs or Ks");
+                    this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks");
                 }
                 else
                 {
-                console.log("Testing Testing");
+                    this.sendTextToTipPopup("Testing Testing");
                 }
-            }
         }
     }
+
+    sendTextToTipPopup(tipString) {
+        const tipPopup = document.getElementById("tipPopup");
+        const tipPopupContainer = document.getElementById("tip-popup-window");
+
+        tipPopup.innerHTML = tipString;
+        tipPopupContainer.style.display = "block";
+
+        setTimeout(function() {tipPopupContainer.style.display = "none"}, 3000);
+    }
+}
 
 
           
@@ -870,6 +932,10 @@ function startGame() {
 
     startAudioLoopAndSetVolume();
     document.getElementById("overlay").style.display = "none";
+    blackjackGame.player.betAmount = 0;
+    blackjackGame.updateBetAmountDisplay();
+    blackjackGame.updateBetAmountButton();
+
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
