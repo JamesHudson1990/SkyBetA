@@ -626,7 +626,7 @@
             }
             else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
             {// This needs to be adjusted so if player has BJ we dont give this advice
-                sendTextToTipPopup("Dealers hand is too strong to risk a double down, if the face up card was weaker this would be an ideal hand to double.")
+                this.sendTextToTipPopup("Dealers hand is too strong to risk a double down, if the face up card was weaker this would be an ideal hand to double.");
             }  
         }
            
@@ -703,12 +703,22 @@
 
     sendTextToTipPopup(tipString) {
         const tipPopup = document.getElementById("tipPopup");
+
+
         const tipPopupContainer = document.getElementById("tip-popup-window");
 
         tipPopup.innerHTML = tipString;
         tipPopupContainer.style.display = "block";
+        tipPopupContainer.style.animation = "fadeIn 1s";
+        //tipPopupContainer.class = "popup show";
 
-        setTimeout(function() {tipPopupContainer.style.display = "none"}, 3000);
+        setTimeout(function() {
+            tipPopupContainer.style.animation = "fadeOut 1s"; 
+        }, 4000);
+        
+        setTimeout(function() {
+            tipPopupContainer.style.display = "none";
+        }, 5000);
     }
 }
 
