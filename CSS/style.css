@@ -960,8 +960,6 @@ Button decorations
   }
 
 .dealer-hand-show h2, .player-hand-show h2 {
-      font-family: Helvetica;
-      text-transform: uppercase;
       font-weight: 800;
       font-size: 2em;
       color: rgba(0, 0, 0, 0.2)

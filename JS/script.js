@@ -155,9 +155,9 @@ class Game {
 
         this.currentlySelectedHandDiv = playersHand1Div; //set currentlySelectedHandDiv back to first hand
 
-        playersHand1Div.innerHTML = ""; //remove the cards from both players hands and the dealers
-        playersHand2Div.innerHTML = "";
-        dealersHandDiv.innerHTML = "";
+        // playersHand1Div.innerHTML = ""; //remove the cards from both players hands and the dealers
+        // playersHand2Div.innerHTML = "";
+        // dealersHandDiv.innerHTML = "";
     }
 
     dealerHasFaceUpAce(){ // this is used to check if the player qualifies for insurance

@@ -70,29 +70,11 @@ Main Game Code
 ##############################
  -->   
     <div class="dealer-hand-show">
-        <h2 id="dealer-text"> </h2>
+        <h2 id="dealer-text"></h2>
         <div class="card-deck" id="dealersHand">
-<!-- 
-
             <div class="card-show card-is-red">♥9</div>
-             -->
-            <!-- <div class="card-show">
-                <div class="card-topleft">
-                    <div class="card-corner-rank">9</div>
-                    <div class="card-corner-suit">♥</div>
-                </div>
-                 <div class="card-bottomright">
-                    <div class="card-corner-rank">9</div>
-                    <div class="card-corner-suit">♥</div>
-                </div>
-            </div>  -->
         </div>
     </div>
-    <!-- <div class="begin-game">
-        <button id="start-control-btn" class="start-control-btn button" onclick="startGame()">
-            <h3>Start Game</h3>
-        </button>
-    </div> -->
   <!--
 ##############################
 Player Card Deck
@@ -106,7 +88,9 @@ Player Card Deck
             </div>
         </div>
         <div class="card-deck">
-            <div id="playersHand" class="active-hand"></div>
+            <div id="playersHand" class="active-hand">
+                <div class="card-show card-is-red">♥9</div>
+            </div>
             <div id="playersHand2"></div>
         </div>
     </div>
