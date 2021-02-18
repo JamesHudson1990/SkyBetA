@@ -837,6 +837,7 @@ function setRemindMeAboutRedirect(){ // when the pop up shows, there a check box
 function startGame(){ // when the button to start a new game this function will start the music, hide the home screen buttons and call a function shoing the betting controls
     startAudioLoopAndSetVolume();
     document.getElementById("overlay").style.display = "none";
+    document.getElementById("dealer-text").innerHTML = "Dealer";
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
@@ -847,7 +848,7 @@ function startAudioLoopAndSetVolume(){
     gameAudio.play();
 }
 
-function toggleSound(){ // wehen the mute button is pressed it will toggle either muting or unmuting the music and change the image of the button to match
+function toggleSound(){ // wd hen the mute button is pressed it will toggle either muting or unmuting the music and change the image of the button to match
     var gameAudio = document.getElementById("gameSound");
     var audioButton = document.getElementById("sound-button-img");
 

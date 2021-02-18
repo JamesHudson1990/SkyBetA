@@ -25,10 +25,11 @@ Top Menu
     </div>
      -->
     <div class="top-nav" id="this-top-nav">
-        <img src="./CSS/skybet-50pxheight.png" class="nav-logo" alt="Return to skybet">
+        
+        <img src="./CSS/skybet-50pxheight.png" class="nav-logo" alt="Return to skybet" onclick="redirectToSkyBet()">
         <div class="nav-right">        
                 <button class="settings-menu-btn">
-                   <h3> Settings Menu > </h3>
+                   <h3>Settings</h3>
                 </button>
                 <div class="settings-menu">
                     <a href="#" onclick="blackjackGame.resetLocalData()">Reset Bank Balance</a>
@@ -69,7 +70,7 @@ Main Game Code
 ##############################
  -->   
     <div class="dealer-hand-show">
-        <h2>Dealer Hand</h2>
+        <h2 id="dealer-text"> </h2>
         <div class="card-deck" id="dealersHand">
 <!-- 
 
@@ -98,8 +99,12 @@ Player Card Deck
 ##############################
  -->    
     <div class="player-hand-show">
-        <h2>Player Hand</h2>
-        <div class="bet-amount">Current bet amount: £<span id="current-bet-amount"></span></div>
+        <h2></h2>
+        <div id="bet-amount-container">
+            <div class="bet-amount">
+                Current Bet  <span>£</span><span id="current-bet-amount"></span>
+            </div>
+        </div>
         <div class="card-deck">
             <div id="playersHand" class="active-hand"></div>
             <div id="playersHand2"></div>
@@ -206,9 +211,10 @@ Tutorial Mode
 ############################ -->
 <div id="tips-blur">
     <div id="tips-container">
-    
-        <button id="exit-tutorial-button" type="button" onclick="exitPage()">X</button>
-        <h1>Tips and Tricks</h1>
+        <div class="tip-header">
+            <h1>Tips and Tricks</h1>
+            <button id="exit-tutorial-button" type="button" onclick="exitPage()">X</button>
+        </div>
         <div id="tipsLeft">
             <h2>Do's</h2>
             <ul class="dos-list">

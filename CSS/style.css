@@ -138,8 +138,6 @@ Game Overlay
 Menu Function
 ##############################
 */
-
-
   .top-nav {
     margin: auto;
     width: 100%;
@@ -160,7 +158,7 @@ Menu Function
     text-align: center;
     color: rgb(255, 234, 45);
     background-color: #237901;
-    border: 1px solid #B89E4B;
+    border: 3px solid #B89E4B;
     font-size: 2em;
     padding: 10px;
   }
@@ -177,12 +175,13 @@ Menu Function
   }
   
   #bankroll-container {
-    font-family: Helvetica;
-    position: fixed;
-    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
     bottom: 0;
     right: 0;
     min-width: 13%;
+    margin-right: 5px;
+    margin-bottom: 5px;
   }
   
  .nav-right {
@@ -199,8 +198,8 @@ Menu Function
     width: 170px;
     background-color: #237901;
     border-radius: 2px;
-    border: 3px solid #B89E4B;
-    box-shadow: 5px 5px 3px black;
+    border: 1px solid #B89E4B;
+    /* box-shadow: 5px 5px 3px black; */
   }
   
   .settings-menu a {
@@ -222,9 +221,14 @@ Menu Function
     color: cornsilk;
     background-color: #237901;
     border-radius: 2px;
-    border: 3px solid #B89E4B;
-    box-shadow: 5px 5px 3px black;
+    height: 50px;
+    border: 1px solid #B89E4B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
+    /* box-shadow: 5px 5px 3px black; */
+
   }
 
 /* 
@@ -260,11 +264,12 @@ Card Deck
     height: 200px;
     width: 125px;
     margin: 10px;
-    text-align: center;
-    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4em;
     border-radius: 2px;
     box-shadow: 5px 5px 3px;
-    line-height: 200px;
 }
 
 .card-is-red {
@@ -353,15 +358,42 @@ Player Deck
 .player-controls {
     margin: auto;
     width: 100%;
-    padding: 10px;
     text-align: center;
 }
-.bet-amount {
-    font-family: sans-serif;
-    font-style: bold;
-    color: whitesmoke;
+
+#bet-amount-container {
 }
 
+.bet-amount {
+    background-color: #237901;
+    font-family: Helvetica;
+    color: whitesmoke;
+    border: 1px solid #B89E4B;
+    padding: 5px;
+    text-align: center;
+    max-width: 16%;
+    margin:auto;
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+@media only screen and (max-width: 600px) {
+    .bet-amount {
+        max-width: 30%;
+    }
+  }
+
+.bet-amount span {
+    color: rgb(255, 234, 45);
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.bet-amount h3 {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+}
 /* 
 ##############################
 Player Action Control Buttons
@@ -514,6 +546,7 @@ Button decorations
     transition-duration: 0.4s;
     cursor: pointer;
     transition: transform .2s;
+    outline:none;
 }
 
 .button:hover {
@@ -521,6 +554,12 @@ Button decorations
     -webkit-transform: scale(1.2); /* Safari 3-8 */
     transform: scale(1.2); 
 }
+
+.button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
 
 
 .disabled {
@@ -538,10 +577,6 @@ Button decorations
 
 #bet-btn h3 {
     display:inline;
-}
-
-#currentBetAmountH3 {
-    color: #f0fa63;
 }
 
 #double-btn {
@@ -574,9 +609,12 @@ Button decorations
 }
 
 #sound-button {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
+    border-color: transparent;
+    margin-left: 5px;
+    margin-bottom: 5px;
 }
 
 
@@ -627,7 +665,7 @@ Button decorations
     padding: 8px 0;
     position: absolute;
     font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 5px 5px 3px black;
+    box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.863);
   }
 
   .popup .popuptext::after {
@@ -687,19 +725,19 @@ Button decorations
     position: absolute;
     text-align: center;
     font-size: 16;
-
 }
 
 #tips-container {
-    display: block;
-    position: absolute;
-    margin: auto;
-    top: 10%;
-    left:10%;
-    right: 10%;
+    display: flex;
+    flex-wrap: wrap;
     border: 1px solid black;
     background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
+}
+
+#tips-header button{
+    border: 0;
+    background: none;
 }
 
 #tips-container h1 {
@@ -716,7 +754,6 @@ Button decorations
     -webkit-text-fill-color: transparent;
     text-align: center;
     padding: 0;
-    padding-bottom: 10px;
     margin: 0;
 }
 
@@ -737,31 +774,49 @@ Button decorations
 }
 
 #tipsLeft {
+    flex: 50%;
+    justify-content: center;
     text-align: left;
-    float: left;
-    width: 40%;
-    padding: 10px;
-    /* background-color: rgb(56, 216, 56); */
     
 }
 
 #tipsRight {
+    flex: 50%;
     text-align: left;
-    float: right;
-    width: 40%;
-    padding: 10px;
-    /* background-color: rgb(238, 57, 57); */
 }
+
+.tip-header {
+    flex: 100%;
+}
+
+@media (max-width: 800px) {
+    #tipsLeft, #tipsRight, .tip-header  {
+      flex: 100%;
+    }
+    #tips-container {
+        position: absolute;
+        top: 25%;
+        border: none;
+        font-size: 14px;
+    }
+  }
+
+  @media (min-width: 800px) {
+    #tips-container {
+        position: absolute;
+        top: 25%;
+    }
+  }
 
 
 #exit-tutorial-button {
-    float: right;
+    position: absolute;
+    right: 0%;
+    top: 0%;
     border: none;
     font-size: 2rem;
     font-weight: bold;
     background-color: none;
-    color: rgb(61, 61, 61);
-    font-family: arial;
 }
 
 #exit-tutorial-button:hover {
@@ -892,12 +947,22 @@ Button decorations
 }
 
 @media screen and (max-width: 800px) {
-    .dealer-hand-show {
-      height: 250px;
-      width: 250px;
+    .card-show {
+        height: 100px;
+        width: 62.5px;
+        font-size: 2em;
     }
-    .player-hand-show {
-      height: 250px;
-      width: 250px; 
+    #dealers-hidden-card {
+        height: 100px;
+        width: 62.5px;
+        font-size: 2em;
     }
+  }
+
+.dealer-hand-show h2, .player-hand-show h2 {
+      font-family: Helvetica;
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 2em;
+      color: rgba(0, 0, 0, 0.2)
   }
