@@ -25,10 +25,11 @@
         this.dealerHasPlayedAfterSplit = false;
         this.bothHandsCheckedAndPlayed = false;
         this.firstHandResultsString = "";
-        
-    
+        this.showTips = true;
+        this.splitAndInsuranceFlopped = false;
         this.currentlySelectedHand = this.player.hand;
         this.currentlySelectedHandDiv = document.getElementById("playersHand");
+        
         //check if data is saved for bankroll and update
         if(parseInt(localStorage.bankroll))
         {
@@ -40,20 +41,21 @@
 
     resetLocalData() {
         localStorage.clear();
+        //set bankroll back to 1000, the default
         this.player.bankroll = 1000;
         this.updateBankrollDisplay();
     }
 
-    offResultsBox() {
+    playerClicksOffResultsPopUp() {
         document.getElementById("resultsBox").style.display = "none";
 
+        //round has ended, reset data and promt player to place bet
         this.resetDataForRound();
         this.clearHandAndAwaitUserBet();
     }
 
     clearHandAndAwaitUserBet() {
-        document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
-
+        this.updateBankrollDisplay();
         this.clearHands();
         this.showBettingControls();
     }
@@ -66,8 +68,8 @@
         document.getElementById("current-bank-roll").innerHTML = this.player.bankroll;
     }
 
-    playGame() {     
-        
+    playGame() {
+        //reset data and shuffle ready for a new hand
         this.updateBankrollDisplay();
         this.deck.resetDeck();
         this.deck.shuffle();
@@ -83,26 +85,21 @@
     
     
     placeBet() {
-        this.displayBankroll();
         if(this.betAmount > 0)
         {
             this.player.bankroll -= this.betAmount;
             this.player.updateLocalStorageBankroll();
-            console.log("You have bet: $" + this.betAmount);
             this.hideBettingControls();
             this.playGame();
         }
-        else
-            console.log("You have to add a bet");
     }
 
     increaseBetByAmount(amountToIncrease) {
-        if (this.player.bankroll >= (this.betAmount + amountToIncrease)){
+        let playerCanAffordToBet = this.player.bankroll >= (this.betAmount + amountToIncrease);
+            
+        if (playerCanAffordToBet){
             this.betAmount += amountToIncrease;
             this.updateBetAmountDisplay();
-        }
-        else{
-            console.log("You don't have the funds for this");
         }
     }
     
@@ -111,7 +108,7 @@
     }
 
     showBettingControls() {
-        var bettingControls = document.getElementById("bettingControls");
+        const bettingControls = document.getElementById("bettingControls");
 
         this.updateBetAmountButton();
         this.updateBetAmountDisplay();
@@ -144,32 +141,31 @@
     }
     
     showActionControls() {
-        var actionControls = document.getElementById("actionControls");
+        const actionControls = document.getElementById("actionControls");
+        let playerCanSplitButHasntYet = ((this.player.hand[0].value == this.player.hand[1].value) && ((this.player.bankroll - this.betAmount) > 0) && !this.hasSplit);
+        let playerCanDoubleDown = this.betAmount <= this.player.bankroll;
+
         actionControls.style.display = "block";
 
         if(this.dealerHasFaceUpAce()) {
             this.showInsuranceButton();
         }
-       
-        let playerCanSplit = (this.player.hand[0].value == this.player.hand[1].value) && ((this.player.bankroll - this.betAmount) > 0);
-        if(playerCanSplit && !this.hasSplit)
+
+        if(playerCanSplitButHasntYet)
         {
             this.showSplitButton();
         }
 
-        
-        if(this.betAmount <= this.player.bankroll)
+        if(playerCanDoubleDown)
             this.showDoubleDownButton();
     }
     
     hideBettingControls() {
-        var bettingControls = document.getElementById("bettingControls");
-        bettingControls.style.display = "none";
+        document.getElementById("bettingControls").style.display = "none";
     }
     
     hideActionControls() {
-        var actionControls = document.getElementById("actionControls");
-        actionControls.style.display = "none";
+        document.getElementById("actionControls").style.display = "none";
     }
     
     add25ToBet(){
@@ -192,46 +188,47 @@
         this.updateBetAmountButton();
     }
 
-    drawCardFromDeck(handToDrawTo, handDiv, isHidden) {
+    drawCardFromDeck(handToDrawTo, handDiv, displayFaceDown) {
         let drawnCardArray = this.deck.drawCard();
         handToDrawTo.push(drawnCardArray[0]);
-        
         let cardIsRed = ((drawnCardArray[0].suit === '♥') || (drawnCardArray[0].suit === '♦'));
-
         let suitAndValue = "" + drawnCardArray[0].suit + drawnCardArray[0].value;
-
         let HTMLforCard = "";
 
         if (cardIsRed) {
-            if (isHidden)
+            if (displayFaceDown)
                 HTMLforCard = "<div class=\"card-show card-is-red\" id=\"dealers-hidden-card\"> <span>" + suitAndValue + " </span> </div>";
             else
                 HTMLforCard = "<div class=\"card-show card-is-red\">" + suitAndValue + "</div>";
         }
         else {
-            if (isHidden)
+            if (displayFaceDown)
                 HTMLforCard = "<div class=\"card-show\" id=\"dealers-hidden-card\"> <span>" + suitAndValue + "</span> </div>";
             else
                 HTMLforCard = "<div class=\"card-show\">" + suitAndValue + "</div>";
         }
 
+        //append the hand div with the new card
         handDiv.innerHTML = handDiv.innerHTML + HTMLforCard;
     }
 
     initialDeal() {
+        //resetting lots of game variables to default state
         this.currentlySelectedHand = this.player.hand;
         this.dealerHasPlayedAfterSplit = false;
         this.bothHandsCheckedAndPlayed = false;
         this.firstHandResultsString = "";
+        this.splitAndInsuranceFlopped = false;
 
+        //2 cards for each player, dealers 2nd is face down
         this.dealerDrawsCard(false);
         this.playerDrawsCard();
         this.dealerDrawsCard(true);
         this.playerDrawsCard();
     }
 
-    dealerDrawsCard(isHidden) {
-            this.drawCardFromDeck(this.dealer.hand, document.getElementById("dealersHand"), isHidden);
+    dealerDrawsCard(displayFaceDown) {
+            this.drawCardFromDeck(this.dealer.hand, document.getElementById("dealersHand"), displayFaceDown);
     }
 
     playerDrawsCard() {
@@ -256,7 +253,6 @@
         //actually update the gui, first get the divs that contain the cards
         const playersHand1Div = document.getElementById("playersHand");
         const playersHand2Div = document.getElementById("playersHand2");
-
         const dealersHandDiv = document.getElementById("dealersHand");
 
         //hard reset the players first hand to the default (active-hand) and hide the 2nd hand
@@ -274,33 +270,27 @@
     }
 
     dealerHasFaceUpAce() {
-            return this.dealer.hand[0].value === 'A';
+        return this.dealer.hand[0].value === 'A';
     }
             
     payoutWinnings(amountToPayOut) {
-        console.log("You have won $" + amountToPayOut)
         this.player.bankroll += amountToPayOut;
         this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
 
-    payoutInsurance() {
+    payoutInsurance() { // function is called to pay the player their winnings when has won and they took insurance during the game
+        this.insuranceTaken = false;
         let winnings = this.insuranceBetAmount * 2;
-        console.log("Your insurance paid out $" + winnings);
         this.player.bankroll += winnings;
         this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
 
-    displayBankroll() {
-        console.log("You have $" + this.player.bankroll);
-    }
-
-    checkResults(handToCheck, betAmountForHand) {
+    checkResults(handToCheck, betAmountForHand) { // this function will take in the hand to check and the bet amount and work out if the player has won or lost
         this.hideActionControls();
-        
 
-        if(!this.bothHandsCheckedAndPlayed) {
+        if(!this.bothHandsCheckedAndPlayed) { // ensures that both hands, when the player splits, are checked oncce
             let playerHasSplitAndNotPlayedSecondHandYet = this.hasSplit && !this.hand1played;
 
             if(playerHasSplitAndNotPlayedSecondHandYet)  {
@@ -361,11 +351,9 @@
         }
         else if (playerIsBust) {
             resultsString += "You went bust, the House wins. ";
-            this.displayBankroll();
         }
         else if (dealerHasBlackjack) {
             resultsString += "The house has blackjack. ";
-            this.displayBankroll();
         }
         else if(dealerAndPlayerHaveSameHandValue) {
             resultsString += "Push, your initial wager is returned. ";
@@ -384,35 +372,39 @@
 
         if(this.insuranceTaken) {
             if(dealerHasBlackjack) {
-                resultsString += "Your insurance paid out. "
-                this.payoutInsurance(); 
+                resultsString += "<br>Your insurance paid out. ";
+                this.payoutInsurance();
             }
             else {
-                resultsString += "Your insurance flopped. ";
+                if(this.hasSplit)
+                    this.splitAndInsuranceFlopped = true;
+                else
+                    resultsString += "<br>Your insurance flopped. ";
             }
         }
+        
         this.hideInsuranceTakenIndicator();
-
 
         if(!this.hasSplit)
             this.showEndOfHandAnimation(resultsString);
         else if(this.firstHandResultsString == "")
             this.firstHandResultsString = resultsString;
-        else
-            this.showEndOfHandAnimation("First hand: " + this.firstHandResultsString + "<br><br>Second hand: " + resultsString);
+        else {
+            if(this.splitAndInsuranceFlopped)
+                this.showEndOfHandAnimation("First hand: " + this.firstHandResultsString + "<br>Second hand: " + resultsString + "<br>Your insurance flopped.");
+            else
+                this.showEndOfHandAnimation("First hand: " + this.firstHandResultsString + "<br>Second hand: " + resultsString);
+        }
             
     }
 
     showEndOfHandAnimation(resultsString) {
-        const resultsBox = document.getElementById("resultsBox");
-        const resultsText = document.getElementById("results-text");
-        resultsBox.style.display = 'block';
-        resultsText.innerHTML = resultsString;
+        document.getElementById("resultsBox").style.display = 'block';
+        document.getElementById("results-text").innerHTML = resultsString;
     }
 
     hideEndOfHandAnimation() {
-        const resultsBox = document.getElementById("resultsBox");
-        resultsBox.style.display = 'none';
+        document.getElementById("resultsBox").style.display = 'none';
     }
 
     hit() {
@@ -432,7 +424,7 @@
         }
     }
 
-    shiftFocusToSecondHand() {
+    shiftFocusToSecondHand() { // when a player has split and played their first hand again, this function will ensiure the next hand to be played is the players second hand, instread of their first one again
             const hand1Div = document.getElementById("playersHand");
             const hand2Div = document.getElementById("playersHand2");
 
@@ -443,7 +435,7 @@
             this.currentlySelectedHandDiv = hand2Div;
     }
 
-    doubleDown() {
+    doubleDown() { // all the game and bankroll logic for when a player doubles down on their hand
             this.doubledDown = true;
 
             if(this.currentlySelectedHand == this.player.hand){
@@ -463,13 +455,13 @@
             this.stand();
     }
 
-    dealerPlays() {
+    dealerPlays() { // function deals to the dealer 
         let dealerHandValue = User.getHandValue(this.dealer.hand);
 
         const dealersHiddenCard = document.getElementById("dealers-hidden-card");
         dealersHiddenCard.id = "";
 
-        if (!User.checkBust(this.dealer.hand))
+        if (!User.checkBust(this.dealer.hand)) // if the dealer is not bust and it will deal to themselvs until they have a hand value of at the 17
         {
                 while(dealerHandValue < 17){
                     this.dealerDrawsCard();
@@ -481,31 +473,13 @@
     }
 
     checkForBlackjack(handToCheckForBlackjack) {
-        if((handToCheckForBlackjack.length == 2) && (User.getHandValue(handToCheckForBlackjack) === 21)){
+        if((handToCheckForBlackjack.length == 2) && (User.getHandValue(handToCheckForBlackjack) === 21))
             return true;
-        }
         else 
             return false;
     }
 
-    displayHand(handToDisplay) {
-        for (let card of handToDisplay) {
-            console.log("You have " + card.value + card.suit)
-        }
-    }
-
-    displayDealersFirstCard() {
-        console.log("The Dealer has: " + this.dealer.hand[0].value + this.dealer.hand[0].suit)
-    }
-
-    displayDealersHand() {
-        console.log("Dealers hand: ");
-        for (let card of this.dealer.hand) {
-            console.log(card.value + card.suit);
-        }
-    }
-
-    playerSplits() {
+    playerSplits() { // this function has all the game and bankroll logic for when a player splits their hand
         this.player.splitHand();
         this.hasSplit = true;
         this.hideSplitButton();
@@ -516,15 +490,15 @@
         this.updateBankrollDisplay();
 
 
-        const hand1Div=document.getElementById("playersHand");
-        const hand2Div=document.getElementById("playersHand2");
+        const hand1Div = document.getElementById("playersHand");
+        const hand2Div = document.getElementById("playersHand2");
         this.drawCardFromDeck(this.player.hand, hand1Div, false);
         this.drawCardFromDeck(this.player.hand2, hand2Div, false);
 
         this.renderHandsFromScratchAfterSplit();
     }
 
-    renderHandsFromScratchAfterSplit() {
+    renderHandsFromScratchAfterSplit() { // when the user chooses to do the split move, this function will create the hmtl logic for showing 2 hands being played instead of one large one
         const hand1Div = document.getElementById("playersHand");
         const hand2Div = document.getElementById("playersHand2");
 
@@ -562,155 +536,140 @@
     
     
     showInsuranceTakenIndicator() {
-        const visualIndicator = document.getElementById("insurance-taken-visual-indicator");
-        visualIndicator.style.visibility = "visible";
+        document.getElementById("insurance-taken-visual-indicator").style.visibility = "visible";
     }
 
     hideInsuranceTakenIndicator() {
-        const visualIndicator = document.getElementById("insurance-taken-visual-indicator");
-        visualIndicator.style.visibility = "hidden";
+        document.getElementById("insurance-taken-visual-indicator").style.visibility = "hidden";
     }
 
-    takeInsurance() {
+    takeInsurance() { // this funcxtion handles the bankroll logic for when a player takes insurance on a hand
         this.hideInsuranceButton();
-
         this.showInsuranceTakenIndicator();
-
-
-        console.log("Insurance taken");
+        
         this.insuranceTaken = true;
         this.insuranceBetAmount = this.betAmount/2;
-        console.log("insurance bet of $" + this.insuranceBetAmount);
         this.player.bankroll -= this.insuranceBetAmount;
+        
         this.player.updateLocalStorageBankroll();
         this.updateBankrollDisplay();
     }
 
     gameTip()
     {
-        if(this.dealerHasFaceUpAce())
-            {
-               
-                this.sendTextToTipPopup("In games with 4 or more decks Dont take insurance this is not worth it.");    
-                this.sendTextToTipPopup("In a single game deck like this, the odds are more in your favour so you can take it."); 
-                this.sendTextToTipPopup("Remember, it is not smart to double against an ace."); 
-            }
-
-        else if(this.dealer.hand[0].intValue === 10) // Repeat tips for 9 / 8 /7
-        {
-            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
-            {
-                this.sendTextToTipPopup("I would stand.");
-            }
-
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
-            {
-                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
-            }
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
-            {
-                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
-            }
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
-            {
-                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
-            }
-            else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 8)
-            {
-                this.sendTextToTipPopup("I would not double down, while the dealer has an ace or a 10, just take a card.");
-            }
-            else if(this.player.hand[0].value === this.player.hand[1].value) 
-            {// This advice should be given anywhere there is a pair *********
-        
-                this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
-            }
-            else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
-            {// This needs to be adjusted so if player has BJ we dont give this advice
-                this.sendTextToTipPopup("Dealers hand is too strong to risk a double down, if the face up card was weaker this would be an ideal hand to double.");
-            }  
-        }
-           
-        else if (this.dealer.hand[0].intValue < 7)
-        {
-
-            //debugger
-            
-            if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+        if(this.showTips){ // this function will take into account the users hand/s and will show a tip on what move they should take
+            if(this.dealerHasFaceUpAce())
                 {
-                    this.sendTextToTipPopup("You should double down");
+                
+                    this.sendTextToTipPopup("In games with 4 or more decks Dont take insurance this is not worth it.");    
+                    this.sendTextToTipPopup("In a single game deck like this, the odds are more in your favour so you can take it."); 
+                    this.sendTextToTipPopup("Remember, it is not smart to double against an ace, just hit if your below 17."); 
                 }
-                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+
+            else if(this.dealer.hand[0].intValue >6 && this.dealer.hand[0].intValue  < 11 ) 
+            {
+                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+                    this.sendTextToTipPopup("I would stand.");
+                else if (this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 16)
                 {
-                    this.sendTextToTipPopup("I would stand.");
-                }                
-                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 || this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 16)
-                { // This rule needs to be adapted
-                    this.sendTextToTipPopup("I would stand.");
+                    if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11)
+                        this.sendTextToTipPopup("Not a good position, but your best play is to take a card.");    
+                    else
+                        this.sendTextToTipPopup("Not a good position, but your best play is to stand.");
                 }
+                else if (this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 && this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 16 )
+                {
+                    
+                        this.sendTextToTipPopup("Not a good position, but your best play is to take a card.");
+                        if(this.player.hand[0].value === this.player.hand[1].value) 
+                        {// This advice should be given anywhere there is a pair *********
+                    
+                            this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
+                        }                        
+                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+                    this.sendTextToTipPopup("I would not double down, while the dealer has a 7 or above, just take a card.");
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
                 {
-                    this.sendTextToTipPopup("You should double down");
+                    this.sendTextToTipPopup("I would not double down, while the dealer has a 7 or above, just take a card.");
+                    if(this.player.hand[0].value === this.player.hand[1].value) 
+                        {// This advice should be given anywhere there is a pair *********
+                    
+                            this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
+                        }
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
-                {
-                    this.sendTextToTipPopup("You should double down");
-                }
+                    this.sendTextToTipPopup("I would not double down, while the dealer has a 7 or above, just take a card.");
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 8)
                 {
+                    this.sendTextToTipPopup("I would not double down, while the dealer has a 7 or above, just take a card.");
+                    if(this.player.hand[0].value === this.player.hand[1].value) 
+                            this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks"); // This advice should be given anywhere there is a pair *********
+                }
+                else if(this.player.hand[0].value === this.player.hand[1].value) 
+                {// This advice should be given anywhere there is a pair *********
+                    this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
+                }
+                else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
+                {// This needs to be adjusted so if player has BJ we dont give this advice
+                    this.sendTextToTipPopup("Dealers hand is too strong to risk a double down, if the face up card was weaker this would be an ideal hand to double.");
+                }  
+            }
+            
+            else if (this.dealer.hand[0].intValue < 7)
+            {
+                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
                     this.sendTextToTipPopup("You should double down");
-                }
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+                    this.sendTextToTipPopup("I would stand.");    
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 && this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 16)
+                    this.sendTextToTipPopup("I would stand."); // This rule needs to be adapted
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 10)
+                    this.sendTextToTipPopup("You should double down");
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
+                    this.sendTextToTipPopup("You should double down");
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 8)
+                    this.sendTextToTipPopup("You should double down");
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 8)
-                {
                     this.sendTextToTipPopup("You should hit");
-                }
                 //this.player.hand[0].numericValue()  === this.player.hand[1].numericValue()
                 else if(this.player.hand[0].value === this.player.hand[1].value) 
                 {// This advice should be given anywhere there is a pair *********
-                
                     this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks")
                 }
-                      
                 else if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
                 {
-                    // This needs to be adjusted so if player has BJ we dont give this advice
-                    this.sendTextToTipPopup("If you have a second card ranging from 2 to 7, double down.")
-                    if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() >= 19 )
-                    {
-                        this.sendTextToTipPopup("You should stand.")  
-                    }
-
+                        // This needs to be adjusted so if player has BJ we dont give this advice
+                        this.sendTextToTipPopup("If you have a second card ranging from 2 to 7, double down.");
+                        if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() >= 19 )
+                            this.sendTextToTipPopup("You should stand.");
                 }        
-                
                 else
-                {
                     this.sendTextToTipPopup("Testing Testing");
-                }
             }    
-            
-        else
-            {
-                if(this.player.hand[0].value === this.player.hand[1].value) 
-                {
                 
-                    this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks");
-                }
-                else
+            else
                 {
-                    this.sendTextToTipPopup("Testing Testing");
-                }
+                    if(this.player.hand[0].value === this.player.hand[1].value) 
+                    {
+                    
+                        this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks");
+                    }
+                    else
+                    {
+                        this.sendTextToTipPopup("Testing Testing");
+                    }
+            }
         }
     }
 
     sendTextToTipPopup(tipString) {
         const tipPopup = document.getElementById("tipPopup");
-
-
         const tipPopupContainer = document.getElementById("tip-popup-window");
 
         tipPopup.innerHTML = tipString;
         tipPopupContainer.style.display = "block";
         tipPopupContainer.style.animation = "fadeIn 1s";
-        //tipPopupContainer.class = "popup show";
 
         setTimeout(function() {
             tipPopupContainer.style.animation = "fadeOut 1s"; 
@@ -719,6 +678,19 @@
         setTimeout(function() {
             tipPopupContainer.style.display = "none";
         }, 5000);
+    }
+
+    toggleTipsPopUp(){ // in the menu whilst in game, there is an option to turn off or on the adivse pop up boxes based on your hand
+        let onOrOffText = document.getElementById("toggleTipsOnOrOffText");
+
+        if(this.showTips){
+            onOrOffText.innerHTML = "on";
+            this.showTips = false;
+        }
+        else if(!this.showTips) {
+            onOrOffText.innerHTML = "off";
+            this.showTips = true;
+        }
     }
 }
 
@@ -737,21 +709,21 @@ class User {
         this.hand = [];
         this.hand2 = [];
     }
-
+// function returns the value of a hand and takes in the hand it needs to calculate as a parameter
     static getHandValue(handToCalculateValueFor) {
         let tempHandValue = 0;      
         let arrayOfCardIntValues = [];
         let numberOfAces = 0;
 
-        for (let card of handToCalculateValueFor) {
+        for (let card of handToCalculateValueFor) { // calculates how many aces are in the hand
             if (card.intValue != 11)
                 tempHandValue += card.intValue;
             else {
                 numberOfAces++;
             }
         }
-
-        if (numberOfAces > 0){
+// depending on the value of the hand and how many aces there are an ace can have a value of 1 or 11 
+        if (numberOfAces > 0){  // this if statment calculates if an ace is going to have a value of 1 or 11
             if(numberOfAces == 1){
                 if((tempHandValue + 11) > 21)
                     tempHandValue += 1;
@@ -777,10 +749,10 @@ class User {
                     tempHandValue += 14;
             }
         }
-        return parseInt(tempHandValue);
+        return parseInt(tempHandValue); // return the integer value of the hand
     }
 
-    splitHand() {
+    splitHand() { // when the player has they can choose to split, this function divides the hand into two
         this.hasSplit = true;
 
         const cardToAddToHand2 = this.hand.slice(-1);
@@ -788,40 +760,27 @@ class User {
         this.hand.pop(cardToAddToHand2[0]);
     }
 
-    static checkBust(handToCheck) {
+    static checkBust(handToCheck) { // this function calculates if the hand passed in as a parameter is bust (over 21)
         if (User.getHandValue(handToCheck) > 21)
             return true;   
         else
             return false;
     }
 
-    setBankrollFromLocalStorage() {
+    setBankrollFromLocalStorage() { // when the page is refreshed this function will retrieve the bankroll from local storage and save it as the players bankroll for the current game
         this.bankroll = localStorage.getItem('bankroll');
     }
 
-    updateLocalStorageBankroll() {
+    updateLocalStorageBankroll() { // when the bankroll has incresed or decreased this function will save the integer in the local storage to be used when the page is refreshed
         localStorage.setItem('bankroll', this.bankroll);
     }
     
 }
 
-class Player extends User  {
-    split() {
-        let handSizeEqualTwo = (this.hand.length === 2);
-        let bothCardsHaveEqualValue = this.hand[0].value === this.hand[1].value;
-        
-        if(handSizeEqualTwo && bothCardsHaveEqualValue) {
-            //logic for split
-            //Possibly need to make a tempoary hand2 value and put one in each
-            
-            console.log("This will be split");
-        }
-        else
-        console.log("This will not be split");
-    }
+class Player extends User  { // used to make the player object which inherits from user
 }
 
-class Dealer extends User {
+class Dealer extends User { // used to make the dealer object which inherits from user
 }
 
 class Deck{
@@ -829,7 +788,7 @@ class Deck{
          this.cards = this.resetDeck();
      }
 
-    resetDeck() {
+    resetDeck() { // this resets the deck after ever hand by making the deck an empty array then repopulating it will all 52 cards
         this.cards = [];
          for (let suit of SUITS) {
              for (let value of VALUES) {
@@ -839,43 +798,36 @@ class Deck{
          }
      }
 
-     drawCard() {
+     drawCard() { // this function is called anytime the player or dealer take a card, it returns the top card on the deck
         const cardsDrawn = this.cards.slice(-1);
         this.cards = this.cards.slice(0, -1);
         return cardsDrawn;
      }
 
-     deckSize() {
+     deckSize() { // returns the size of the deck
          return this.cards.length;
      }
 
-     shuffle() {
+     shuffle() { // every time the deck is shuffles at the start of each game this function is called
          for(let i = this.deckSize() - 1; i > 0; i--){
              const newLocation = Math.floor(Math.random() * (i + 1)); //Random location before the card we are on
              const oldCard = this.cards[newLocation]; // Switched the card we are currently on with new card at the random location
              this.cards[newLocation] = this.cards[i];
              this.cards[i] = oldCard;
          }
-     }
-
-     displayDeck() {
-         for (let c of this.cards) {
-            console.log(c.value + c.suit);
-         }
+     
      }
  }
 
  class Card{
-    constructor(suit, value){
+    constructor(suit, value){ // each card object has an attreibute of a suit and a value
          this.suit = suit;
          this.value = value;
          this.intValue = this.numericValue();
          this.aceValueOf11 = true;
      }
-    get colour(){
-         return this.suit === "♠" || this.suit === "♣" ? 'black': 'red'
-    }
-    numericValue() {
+
+    numericValue() { // function returns the numereic value of a card, if its a picture card 10 is returned, ace - 11, other than that the numeric value is just the value of the card
         if (['J', 'Q', 'K'].includes(this.value)){
             return 10;
         }
@@ -889,8 +841,7 @@ class Deck{
     
  }
 
-//online/offline api stuff
-const checkOnlineStatus = async () => {
+const checkOnlineStatus = async () => { // this function controls the online/offline api to simulate being connected to the internet
     try {
       const online = await fetch("https://bet.sbgcdn.com/content/cadmin/700f32ed29c1554daddeb32776c4aa04.jpg", {cache: "no-store"});
       
@@ -900,10 +851,10 @@ const checkOnlineStatus = async () => {
     }
   };
 
-  setInterval(async () => {
+  setInterval(async () => { // this function will check the online/offline status every 60 seconds
     const connected = await checkOnlineStatus();
     
-    displayRedirectPopUp(connected);
+    displayRedirectPopUp(connected); // if the user is online, a popup with a button taking you to the skybet website will appear
 
     }, 60000);
 
@@ -913,22 +864,22 @@ const checkOnlineStatus = async () => {
 
 
 function displayRedirectPopUp(connection) {
-    if (connection && remindMe) {
+    if (connection && remindMe) { // checksif they're online and haven't selected the do not remind me again check box, if both are true the pop up shows
         const popUp = document.getElementById("status-popup");
         popUp.style.display = "block";
     }
 }
 
-function hideRedirectPopUp(){
+function hideRedirectPopUp(){ // hides the online connected popup shown to the user
     const popUp = document.getElementById("status-popup");
     popUp.style.display = "none";
 }
 
-function redirectToSkyBet() {
+function redirectToSkyBet() { 
     window.location.href = "https://m.skybet.com/";
 }
 
-function setRemindMeAboutRedirect() {
+function setRemindMeAboutRedirect() { // when the pop up shows, there a check box the user can select to block the pop up from showing
     const checkbox = document.getElementById("remind-checkbox");
     remindMe = !checkbox.checked;
 }
@@ -938,14 +889,10 @@ function setRemindMeAboutRedirect() {
 
 var blackjackGame = new Game();
 
-function startGame() {
+function startGame() { // when the button to start a new game this function will start the music, hide the home screen buttons and call a function shoing the betting controls
 
     startAudioLoopAndSetVolume();
     document.getElementById("overlay").style.display = "none";
-    blackjackGame.player.betAmount = 0;
-    blackjackGame.updateBetAmountDisplay();
-    blackjackGame.updateBetAmountButton();
-
     blackjackGame.clearHandAndAwaitUserBet();
 }
 
@@ -958,7 +905,7 @@ function startAudioLoopAndSetVolume() {
     gameAudio.play();
 }
 
-function toggleSound(){
+function toggleSound(){ // wehen the mute button is pressed it will toggle either muting or unmuting the music and change the image of the button to match
     var gameAudio = document.getElementById("gameSound");
     var audioButton = document.getElementById("sound-button-img");
 
@@ -978,3 +925,34 @@ function newGame() {
   document.getElementById("overlay").style.display = "none";
 }
    
+
+function backToHomePage(){
+    // TODO: Hide the game(anything thats on the game screen except for teh skybet logo)
+    var homePageBtns = document.getElementById("overlay");
+    homePageBtns.style.display = "block";
+
+
+}
+
+function tutorialMode(){ // on the home page when the tips n tricks is pressed this function will show the text
+
+    document.getElementById("tips-blur").style.display = "block";
+
+}
+
+function exitPage(){ // hides tips n tricks page
+
+    var tipsBox = document.getElementById("tips-blur");
+    tipsBox.style.display = "none";
+}
+
+function rulesMode() // on the home page when the rules are pressed this function will show the text
+{
+    document.getElementById("rules-blur").style.display = "block";
+}
+
+function exitRulesPage(){ // hides rules page
+
+    var rulesBox = document.getElementById("rules-blur");
+    rulesBox.style.display = "none";
+}
