@@ -1,10 +1,10 @@
 body
 {
-    margin: 0;
-    padding: 0;
     font-family: "Brush Script MT", Arial, sans-serif;
     font-size: 18px;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
   html { 
@@ -239,9 +239,8 @@ Dealer Deck
 
 
 .dealer-hand-show {
-    margin: auto;
+    margin: 0;
     width: 100%;
-    padding: 10px;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -257,6 +256,7 @@ Card Deck
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
+    padding:0;
 }
 
 .card-show {
@@ -271,6 +271,16 @@ Card Deck
     border-radius: 2px;
     box-shadow: 5px 5px 3px;
 }
+
+.padding-card{
+    background-color: none;
+    width: 0;
+    margin: 10px;
+    height: 200px;
+    display: flex;
+    visibility: hidden;
+}
+
 
 .card-is-red {
     color: red;
@@ -350,7 +360,6 @@ Player Deck
 .player-hand-show {
     margin: auto;
     width: 100%;
-    padding: 10px;
     text-align: center;
     margin-bottom: 10px;   
 }
@@ -369,12 +378,13 @@ Player Deck
     font-family: Helvetica;
     color: whitesmoke;
     border: 1px solid #B89E4B;
-    padding: 5px;
+    padding: 10px;
     text-align: center;
-    max-width: 16%;
-    margin:auto;
-    margin-bottom: 20px;
     font-size: 1em;
+    margin: 0 auto;
+    margin-bottom: 15px;
+    display: table;
+    min-width: 16%;
 }
 
 @media only screen and (max-width: 600px) {
@@ -385,8 +395,8 @@ Player Deck
 
 .bet-amount span {
     color: rgb(255, 234, 45);
-    font-size: 1.2em;
-    font-weight: bold;
+    font-size: 1em;
+    font-weight: normal;
 }
 
 .bet-amount h3 {
@@ -473,6 +483,14 @@ Player Betting Control Buttons
 ##############################
 */
 
+.control-btn-25, .control-btn-50, .control-btn-75, .control-btn-100 {
+    font-family: Helvetica;
+    font-size: 1em;
+    text-align: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
 .control-btn-25 {
     height: 75px;
     width: 75px;
@@ -496,7 +514,7 @@ Player Betting Control Buttons
 .control-btn-75 {
     height: 75px;
     width: 75px;
-    background-color: #1D2E77;
+    background-color: #4d6dff;
     color: black;
     border-radius: 50%;
     border: 3px solid #ffffff;
@@ -730,6 +748,7 @@ Button decorations
 #tips-container {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
     border: 1px solid black;
     background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
@@ -737,7 +756,7 @@ Button decorations
 
 #tips-header button{
     border: 0;
-    background: none;
+    background: transparent;
 }
 
 #tips-container h1 {
@@ -753,8 +772,6 @@ Button decorations
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-align: center;
-    padding: 0;
-    margin: 0;
 }
 
 #tips-blur {
@@ -795,7 +812,6 @@ Button decorations
     }
     #tips-container {
         position: absolute;
-        top: 25%;
         border: none;
         font-size: 14px;
     }
@@ -804,7 +820,6 @@ Button decorations
   @media (min-width: 800px) {
     #tips-container {
         position: absolute;
-        top: 25%;
     }
   }
 
@@ -947,7 +962,7 @@ Button decorations
 }
 
 @media screen and (max-width: 800px) {
-    .card-show {
+    .card-show, .padding-card {
         height: 100px;
         width: 62.5px;
         font-size: 2em;
@@ -957,10 +972,18 @@ Button decorations
         width: 62.5px;
         font-size: 2em;
     }
+    
+    #wrapper {
+        width: 100%;
+        height: 100%;
+    }
+
   }
 
 .dealer-hand-show h2, .player-hand-show h2 {
       font-weight: 800;
-      font-size: 2em;
-      color: rgba(0, 0, 0, 0.2)
+      font-size: 3em;
+      color: rgba(0, 0, 0, 0.3);
+      padding-bottom: 0;
+      margin-bottom: 0;
   }

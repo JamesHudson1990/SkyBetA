@@ -116,6 +116,9 @@ class Game {
         this.firstHandResultsString = "";
         this.splitAndInsuranceFlopped = false;
 
+        document.getElementById("playersHand").innerHTML = "";
+        document.getElementById("dealersHand").innerHTML = "";
+
         this.dealerDrawsCard(false); //2 cards for each player, dealers 2nd is face down
         this.playerDrawsCard();
         this.dealerDrawsCard(true);
@@ -149,15 +152,17 @@ class Game {
         const playersHand2Div = document.getElementById("playersHand2");
         const dealersHandDiv = document.getElementById("dealersHand");
         
-        playersHand1Div.className = "active-hand"; //hard reset the players first hand to the default (active-hand) and hide the 2nd hand
+        //playersHand1Div.className = "active-hand"; //hard reset the players first hand to the default (active-hand) and hide the 2nd hand
         playersHand2Div.className = "";
         playersHand2Div.style.display = "none";
 
         this.currentlySelectedHandDiv = playersHand1Div; //set currentlySelectedHandDiv back to first hand
 
-        // playersHand1Div.innerHTML = ""; //remove the cards from both players hands and the dealers
-        // playersHand2Div.innerHTML = "";
-        // dealersHandDiv.innerHTML = "";
+        playersHand1Div.innerHTML = "<div class=\"padding-card\"></div>"; //remove the cards from both players hands and the dealers
+        playersHand2Div.innerHTML = "";
+        dealersHandDiv.innerHTML = "<div class=\"padding-card\"></div>";
+
+        
     }
 
     dealerHasFaceUpAce(){ // this is used to check if the player qualifies for insurance
@@ -364,6 +369,8 @@ class Game {
         this.updateBankrollDisplay();
 
         const hand1Div = document.getElementById("playersHand");
+        hand1Div.className += " active-hand";
+
         const hand2Div = document.getElementById("playersHand2");
         this.drawCardFromDeck(this.player.hand, hand1Div, false);
         this.drawCardFromDeck(this.player.hand2, hand2Div, false);
