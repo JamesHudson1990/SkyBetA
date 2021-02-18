@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackjack</title>
     <link rel="stylesheet" href="CSS/style.css">
-    <script src="JS/script.js"></script>
-    <script src="https://kit.fontawesome.com/44d61e00dc.js" crossorigin="anonymous"></script>
+    <script type="module" src="JS/main.js"></script>
     <!-- <audio id="gameAudio" src="./SOUND/backgroundNoise.mp3" ></audio> -->
 </head>
  <!--
@@ -26,7 +25,7 @@ Top Menu
      -->
     <div class="top-nav" id="this-top-nav">
         
-        <img src="./CSS/skybet-50pxheight.png" class="nav-logo" alt="Return to skybet" onclick="redirectToSkyBet()">
+        <img src="./CSS/skybet-50pxheight.png" class="nav-logo" alt="Return to skybet" onclick="redirectToSkyBet();">
         <div class="nav-right">        
                 <button class="settings-menu-btn">
                    <h3>Settings</h3>
@@ -140,16 +139,16 @@ Player Control Buttons
     <div id="status-popup">
         <div class="popup-container">
             <h1>It looks like you're connected...</h1>
-            <button id="keep-playing-button" button class="popup-btn popup-btn-red" onclick="hideRedirectPopUp()">
+            <button id="keep-playing-button" button class="popup-btn popup-btn-red" onclick="window.hideRedirectPopUp();">
                 <h3>Return to game</h3>
             </button>
-            <button id="return-button" button class="popup-btn popup-btn-green" onclick="redirectToSkyBet()">
+            <button id="return-button" button class="popup-btn popup-btn-green" onclick="window.redirectToSkyBet();">
                 <h3>Take me to Sky Bet</h3>
             </button>
-            <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="setRemindMeAboutRedirect()"></h2>
+            <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="window.setRemindMeAboutRedirect();"></h2>
         </div>
     </div>
-    <div id="resultsBox" onclick="blackjackGame. playerClicksOffResultsPopUp()">
+    <div id="resultsBox" onclick="blackjackGame.playerClicksOffResultsPopUp()">
         <div class="results-container">
             <h1 id="results-text"></h1>
             <h3>Press anywhere to continue</h3>
@@ -173,10 +172,6 @@ Player Control Buttons
 <button id="sound-button" class="sound-control-btn button" onclick="toggleSound()">
     <img id="sound-button-img" src="./CSS/pinkSoundOn.png" alt="Sound" width="40" height="40">
 </button>
-
-
-
-    </div> 
 
     <div class="popup" id="tip-popup-window">
         <span class="popuptext" id="tipPopup"></span>
