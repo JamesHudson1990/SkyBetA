@@ -7,4 +7,4 @@ Once you have the Live Server extension for VS code installed, open the project 
 
 The reason that this being nessicary is that many browsers do not allow you to access files on the local filesystem with JavaScript (even if the HTML document is also on the local filesystem). This extends to loading JavaScript modules. Running from a web server resolves this issue.
 
-Alternatively you can access the live demo hosted at: https://purple-bush-02e17af03.azurestaticapps.net
+Alternatively you can access the live demo hosted at: https://skybetgroupa.github.io/
