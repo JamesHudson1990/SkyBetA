@@ -104,5 +104,4 @@ window.tutorialMode = tutorialMode;
 window.exitPage = exitPage;
 window.rulesMode = rulesMode;
 window.exitRulesPage = exitRulesPage;
-
 window.blackjackGame =  blackjackGame;

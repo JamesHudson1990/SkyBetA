@@ -77,6 +77,12 @@ class Game {
         }
     }
 
+    clearBet(){
+        this.player.betAmount === 0;
+        this.updateBetAmountButton();
+        this.updateBetAmountDisplay();
+    }
+
     increaseBetByAmount(amountToIncrease){
         let playerCanAffordToBet = this.player.bankroll >= (this.betAmount + amountToIncrease);
             
@@ -429,9 +435,7 @@ class Game {
     gameTip(){
         if(this.showTips){ // this function will take into account the users hand/s and will show a tip on what move they should take
             if(this.dealerHasFaceUpAce()){
-                    this.sendTextToTipPopup("In games with 4 or more decks Dont take insurance this is not worth it. In a single game deck like this, the odds are more in your favour so you can take it. Remember, it is not smart to double against an ace, just hit if your below 17.");    
-                    //this.sendTextToTipPopup("In a single game deck like this, the odds are more in your favour so you can take it."); 
-                    //this.sendTextToTipPopup("Remember, it is not smart to double against an ace, just hit if your below 17."); 
+                    this.sendTextToTipPopup("In games with 4 or more decks Dont take insurance this is not worth it. In a single game deck like this, the odds are more in your favour so you can take it. Remember, it is not smart to double against an ace, just hit if your below 17.");                       
             }
             else if(this.dealer.hand[0].intValue > 6 && this.dealer.hand[0].intValue  < 11 ) 
             {
@@ -451,7 +455,7 @@ class Game {
                     this.sendTextToTipPopup("Not a good position, but your best play is to take a card.");
                         
                     if(this.player.hand[0].value === this.player.hand[1].value) 
-                        this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks"); // This advice should be given anywhere there is a pair *********
+                        this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks"); 
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
                     this.sendTextToTipPopup("You shouldn't double down while the dealer has a 7 or above, just take a card.");
@@ -459,7 +463,7 @@ class Game {
                 {
                     this.sendTextToTipPopup("Do not double down, while the dealer has a 7 or above, just take a card.");
                     if(this.player.hand[0].value === this.player.hand[1].value)
-                            this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks"); // This advice should be given anywhere there is a pair *********
+                            this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks"); 
                 }
                 else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 9)
                     this.sendTextToTipPopup("Do not double down, while the dealer has a 7 or above, just take a card.");
@@ -484,11 +488,11 @@ class Game {
             }
             else if (this.dealer.hand[0].intValue < 7)
             {
-                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
-                    this.sendTextToTipPopup("You should stand.");
-                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
+                // if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
+                //     this.sendTextToTipPopup("You should stand.");
+                if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() === 11)
                     this.sendTextToTipPopup("You should double down");
-                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 17)
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 16)
                 {
                     if(this.player.hand[0].value === this.player.hand[1].value) 
                     {    
@@ -499,7 +503,7 @@ class Game {
                         this.sendTextToTipPopup("You should stand."); 
                     }                                            
                 }                       
-                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 && this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 16)
+                else if(this.player.hand[0].numericValue() + this.player.hand[1].numericValue() > 11 && this.player.hand[0].numericValue() + this.player.hand[1].numericValue() < 17)
                 {
                     if(this.player.hand[0].numericValue() === 11 || this.player.hand[1].numericValue() === 11) 
                     {
@@ -529,13 +533,13 @@ class Game {
                         this.sendTextToTipPopup("You should stand.");
                 }
                 else
-                    this.sendTextToTipPopup("Testing Testing");
+                    this.sendTextToTipPopup("Testing Testing"); // To test if any scenario has been missed.
             }    
             else {
                 if(this.player.hand[0].value === this.player.hand[1].value)
                     this.sendTextToTipPopup("Never split on a pair of 5s, 10s Js, Qs or Ks");
                 else
-                    this.sendTextToTipPopup("Testing Testing");
+                    this.sendTextToTipPopup("Testing Testing"); // To test if any scenario has been missed.
             }
         }
     }

@@ -3,8 +3,11 @@ body
     font-family: "Brush Script MT", Arial, sans-serif;
     font-size: 18px;
     overflow: hidden;
-    margin: 0;
-    padding: 0;
+    margin-right: auto;
+    margin-left:  auto;
+    max-width: 960px;
+    padding-right: 10px;
+    padding-left:  10px;
 }
 
   html { 
@@ -372,6 +375,10 @@ Player Deck
 
 #bet-amount-container {
 }
+#current-bet
+{
+    font-size: 1.2em;
+}
 
 .bet-amount {
     background-color: #237901;
@@ -387,9 +394,9 @@ Player Deck
     min-width: 16%;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 800px) {
     .bet-amount {
-        max-width: 30%;
+        max-width: 50%;
     }
   }
 
@@ -404,6 +411,11 @@ Player Deck
     padding: 0;
     font-weight: normal;
 }
+
+
+
+
+
 /* 
 ##############################
 Player Action Control Buttons
@@ -495,6 +507,16 @@ Player Betting Control Buttons
     height: 75px;
     width: 75px;
     background-color: #12894D;
+    color: black;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 5px 5px 3px black;
+}
+
+.control-btn-clear {
+    height: 75px;
+    width: 75px;
+    background-color: #f50101;
     color: black;
     border-radius: 50%;
     border: 3px solid #ffffff;
@@ -597,6 +619,10 @@ Button decorations
     display:inline;
 }
 
+#clear-bet-btn {
+    display:inline;
+}
+
 #double-btn {
     display: none;
 }
@@ -640,7 +666,7 @@ Button decorations
     position: absolute;
     top: 50%;
     right: 10%;
-    border: 5px solid white;
+    border: 2px solid white;
     background-color: rgba(0,0,0,0.8);
     padding: 10px;
     margin: auto;
@@ -819,6 +845,7 @@ Button decorations
 
   @media (min-width: 800px) {
     #tips-container {
+        top: 20%;
         position: absolute;
     }
   }
@@ -853,7 +880,7 @@ Button decorations
     display: block;
     position: absolute;
     margin: auto;
-    top: 10%;
+    top: 20%;
     left:10%;
     right: 10%;
     border: 1px solid black;
@@ -961,23 +988,53 @@ Button decorations
     margin-left:10%;
 }
 
+.center-container {
+    margin: 0;
+    width: 100%;
+}
 @media screen and (max-width: 800px) {
     .card-show, .padding-card {
         height: 100px;
         width: 62.5px;
-        font-size: 2em;
+        font-size: 1.5em;
     }
     #dealers-hidden-card {
         height: 100px;
         width: 62.5px;
-        font-size: 2em;
+        font-size: 1.5em;
     }
     
     #wrapper {
         width: 100%;
         height: 100%;
     }
-
+    .popup-container {
+        width: 100%;
+        padding: 0;
+    }
+    .popup-btn {
+        width: 160px;
+    }
+    #remind-checkbox {
+        margin-right: 25px;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+    }
+    .remind-me-text {
+        padding: 10px;
+    }
+    .popup-container h2 {
+        padding-bottom: 10px;
+    }
+    .popup-container h1 {
+        padding-top: 10px;
+    }
+    #rules-container {
+        top: 0%;
+    }
+    .control-btn-hit, .control-btn-stand, .control-btn-double, .control-btn-split, .control-btn-insurance {
+        width: 120px;
+    }
   }
 
 .dealer-hand-show h2, .player-hand-show h2 {

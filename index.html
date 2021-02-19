@@ -14,7 +14,6 @@ Top Menu
 ##############################
  --> 
 <body>
-<div id="wrapper">
      <!--
     <div class="show-bet-tokens">
         <div class="small-25-btn">25</div>
@@ -94,12 +93,16 @@ Player Control Buttons
  
  <div id="bet-amount-container">
     <div class="bet-amount">
-        Current Bet  <span>£</span><span id="current-bet-amount"></span>
+     <div id = "current-bet"> Current Bet </div><span>£</span><span id="current-bet-amount"></span>
+     
     </div>
 </div>
 
  <div class="player-controls" id="bettingControls">
     <div class="player-control-btns">
+        <button id="clear-bet-btn" class="control-btn-bet button" onclick="blackjackGame.clearBet()">
+            <h3>Clear Bet</h3><h3 id="clearBetAmountH3"></h3>
+        </button>
         <button id="25-btn" class="control-btn-25 button" onclick="blackjackGame.add25ToBet()">25</button>
         <button id="50-btn" class="control-btn-50 button" onclick="blackjackGame.add50ToBet()">50</button>
         <button id="75-btn" class="control-btn-75 button" onclick="blackjackGame.add75ToBet()">75</button>
@@ -139,12 +142,14 @@ Player Control Buttons
     <div id="status-popup">
         <div class="popup-container">
             <h1>It looks like you're connected...</h1>
-            <button id="keep-playing-button" button class="popup-btn popup-btn-red" onclick="window.hideRedirectPopUp();">
-                <h3>Return to game</h3>
-            </button>
-            <button id="return-button" button class="popup-btn popup-btn-green" onclick="window.redirectToSkyBet();">
-                <h3>Take me to Sky Bet</h3>
-            </button>
+            <div class="center-container">
+                <button id="keep-playing-button" button class="popup-btn popup-btn-red" onclick="window.hideRedirectPopUp();">
+                    <h3>Return to game</h3>
+                </button>
+                <button id="return-button" button class="popup-btn popup-btn-green" onclick="window.redirectToSkyBet();">
+                    <h3>Take me to Sky Bet</h3>
+                </button>
+            </div>
             <h2>Do not remind me again <input type="checkbox" id="remind-checkbox" onclick="window.setRemindMeAboutRedirect();"></h2>
         </div>
     </div>
@@ -154,7 +159,6 @@ Player Control Buttons
             <h3>Press anywhere to continue</h3>
         </div>
     </div>
-</div>
 
 <div id="insurance-taken-visual-indicator"><h1>Insurance Taken</h1></div>
 
@@ -238,7 +242,6 @@ Tutorial Mode
         <br style="clear:both;"/>
     </div>
 </div>
-
 
 
 
