@@ -1,5 +1,5 @@
-import { User } from '/JS/user.js';
-import { Deck } from '/JS/deck.js';
+import { User } from './user.js';
+import { Deck } from './deck.js';
 
 export class Game {
     constructor() {

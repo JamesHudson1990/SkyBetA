@@ -76,6 +76,7 @@ function newGame(){
 }
 
 function tutorialMode(){
+    //debugger;
     document.getElementById("tips-blur").style.display = "block";
 }
 

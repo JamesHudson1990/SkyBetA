@@ -100,9 +100,6 @@ Player Control Buttons
 
  <div class="player-controls" id="bettingControls">
     <div class="player-control-btns">
-        <button id="clear-bet-btn" class="control-btn-bet button" onclick="blackjackGame.clearBet()">
-            <h3>Clear Bet</h3><h3 id="clearBetAmountH3"></h3>
-        </button>
         <button id="25-btn" class="control-btn-25 button" onclick="blackjackGame.add25ToBet()">25</button>
         <button id="50-btn" class="control-btn-50 button" onclick="blackjackGame.add50ToBet()">50</button>
         <button id="75-btn" class="control-btn-75 button" onclick="blackjackGame.add75ToBet()">75</button>
@@ -110,6 +107,9 @@ Player Control Buttons
 
         <button id="bet-btn" class="control-btn-bet button" onclick="blackjackGame.placeBet()">
             <h3>Press to bet</h3> <h3 id="currentBetAmountH3"></h3>
+        </button>
+        <button id="clear-bet-btn" class="control-btn-bet button" onclick="blackjackGame.clearBet()">
+            <h3>Clear Bet</h3><h3 id="clearBetAmountH3"></h3>
         </button>
     </div>
 </div>
